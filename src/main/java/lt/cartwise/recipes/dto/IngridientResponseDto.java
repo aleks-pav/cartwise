@@ -1,6 +1,6 @@
 package lt.cartwise.recipes.dto;
 
-import lt.cartwise.Unit;
+import lt.cartwise.enums.Unit;
 
 public class IngridientResponseDto {
 	

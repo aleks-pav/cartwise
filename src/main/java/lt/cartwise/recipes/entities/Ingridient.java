@@ -1,7 +1,7 @@
 package lt.cartwise.recipes.entities;
 
 import jakarta.persistence.*;
-import lt.cartwise.Unit;
+import lt.cartwise.enums.Unit;
 
 @Entity
 @Table(name = "ingridients")

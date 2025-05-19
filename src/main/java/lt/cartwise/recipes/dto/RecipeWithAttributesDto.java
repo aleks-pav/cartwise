@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import lt.cartwise.recipes.entities.RecipeCategory;
+import lt.cartwise.translations.TranslationByLanguageDto;
 
 public class RecipeWithAttributesDto {
 	
 	private String name;
 	private Double portions;
 	private Boolean isPublic;
+	private List<TranslationByLanguageDto> translations;
 	private List<RecipeCategory> cetegories;
 	private List<IngridientResponseDto> ingidients;
 	private LocalDateTime createdAt;
@@ -18,11 +20,12 @@ public class RecipeWithAttributesDto {
 
 
 
-	public RecipeWithAttributesDto(String name, Double portions, Boolean isPublic, 
+	public RecipeWithAttributesDto(String name, Double portions, Boolean isPublic, List<TranslationByLanguageDto> translations,
 			List<IngridientResponseDto> ingidients, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.name = name;
 		this.portions = portions;
 		this.isPublic = isPublic;
+		this.translations = translations;
 		this.ingidients = ingidients;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -46,6 +49,12 @@ public class RecipeWithAttributesDto {
 	}
 	public void setIsPublic(Boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+	public List<TranslationByLanguageDto> getTranslations() {
+		return translations;
+	}
+	public void setTranslations(List<TranslationByLanguageDto> translations) {
+		this.translations = translations;
 	}
 	public List<RecipeCategory> getCetegories() {
 		return cetegories;

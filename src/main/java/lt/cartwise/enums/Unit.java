@@ -1,4 +1,4 @@
-package lt.cartwise;
+package lt.cartwise.enums;
 
 public enum Unit {
 	pcs,
