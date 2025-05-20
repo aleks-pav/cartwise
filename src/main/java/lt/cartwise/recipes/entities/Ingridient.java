@@ -2,6 +2,7 @@ package lt.cartwise.recipes.entities;
 
 import jakarta.persistence.*;
 import lt.cartwise.enums.Unit;
+import lt.cartwise.products.entities.Product;
 
 @Entity
 @Table(name = "ingridients")
@@ -20,6 +21,9 @@ public class Ingridient {
 	@JoinColumn(name = "recipe_id")
 	private Recipe recipe;
 	
+	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
 
 	
 	
@@ -40,6 +44,18 @@ public class Ingridient {
 	}
 	public void setUnits(Unit units) {
 		this.units = units;
+	}
+	public Recipe getRecipe() {
+		return recipe;
+	}
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
+	}
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 	
 	

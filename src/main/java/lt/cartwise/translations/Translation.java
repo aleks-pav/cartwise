@@ -6,7 +6,7 @@ import lt.cartwise.enums.Model;
 @Entity
 @Table(
 		name = "translations"
-		, uniqueConstraints  = {@UniqueConstraint(name = "translation_unique", columnNames = "translatableId, translatableType, language, field_name")}
+		, uniqueConstraints  = {@UniqueConstraint(name = "translation_unique", columnNames = {"translatableId", "translatableType", "language", "field_name"})}
 		, indexes = {@Index(name = "translation_lookup", columnList = "translatableId, translatableType, language")}
 )
 public class Translation {

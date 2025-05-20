@@ -1,16 +1,19 @@
 package lt.cartwise.recipes.dto;
 
 import lt.cartwise.enums.Unit;
+import lt.cartwise.products.dto.ProductIngridientDto;
 
 public class IngridientResponseDto {
 	
 	private Double amount;
 	private Unit units;
+	private ProductIngridientDto product;
 	
 	
-	public IngridientResponseDto(Double amount, Unit units) {
+	public IngridientResponseDto(Double amount, Unit units, ProductIngridientDto product) {
 		this.amount = amount;
 		this.units = units;
+		this.product = product;
 	}
 	
 	
@@ -26,7 +29,10 @@ public class IngridientResponseDto {
 	public void setUnits(Unit units) {
 		this.units = units;
 	}
-	
-	
-	
+	public ProductIngridientDto getProduct() {
+		return product;
+	}
+	public void setProduct(ProductIngridientDto product) {
+		this.product = product;
+	}
 }
