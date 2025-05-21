@@ -9,7 +9,7 @@ import lt.cartwise.recipes.dto.RecipeWithAttributesDto;
 import lt.cartwise.recipes.services.RecipeService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/recipes")
 public class RecipeController {
 	

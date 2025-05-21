@@ -8,6 +8,7 @@ import lt.cartwise.translations.TranslationByLanguageDto;
 
 public class RecipeWithAttributesDto {
 	
+	private Long id;
 	private String name;
 	private Double portions;
 	private Boolean isPublic;
@@ -20,8 +21,9 @@ public class RecipeWithAttributesDto {
 
 
 
-	public RecipeWithAttributesDto(String name, Double portions, Boolean isPublic, List<TranslationByLanguageDto> translations,
+	public RecipeWithAttributesDto(Long id, String name, Double portions, Boolean isPublic, List<TranslationByLanguageDto> translations,
 			List<IngridientResponseDto> ingidients, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		this.id = id;
 		this.name = name;
 		this.portions = portions;
 		this.isPublic = isPublic;
@@ -32,6 +34,12 @@ public class RecipeWithAttributesDto {
 	}
 	
 	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}

@@ -41,7 +41,8 @@ public class RecipeService {
 	
 	
 	private RecipeWithAttributesDto toRecipeWithAttributesDto(Recipe recipe) {
-		return new RecipeWithAttributesDto(recipe.getName()
+		return new RecipeWithAttributesDto(recipe.getId()
+					, recipe.getName()
 					, recipe.getPortions()
 					, recipe.getIsPublic()
 					, this.getGroupedTranslations( Model.RECIPE, recipe.getId() )
