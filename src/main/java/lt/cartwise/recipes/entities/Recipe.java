@@ -19,7 +19,7 @@ public class Recipe extends Timestampable {
 	private Boolean isPublic;
 	
 	@ManyToMany(mappedBy = "recipes")
-	private List<RecipeCategory> cetegories;
+	private List<RecipeCategory> categories;
 
 	@OneToMany (mappedBy = "recipe", cascade = CascadeType.ALL)
 	private List<Ingridient> ingidients;
@@ -58,12 +58,12 @@ public class Recipe extends Timestampable {
 		this.isPublic = isPublic;
 	}
 
-	public List<RecipeCategory> getCetegories() {
-		return cetegories;
+	public List<RecipeCategory> getCategories() {
+		return categories;
 	}
 
-	public void setCetegories(List<RecipeCategory> cetegories) {
-		this.cetegories = cetegories;
+	public void setCategories(List<RecipeCategory> categories) {
+		this.categories = categories;
 	}
 
 	public List<Ingridient> getIngidients() {

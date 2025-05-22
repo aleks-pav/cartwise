@@ -13,7 +13,7 @@ public class Image extends Timestampable {
 	
 	private String src;
 	private Integer position;
-	private Boolean active;
+	private Boolean isActive;
 	
 	@ManyToOne
 	@JoinColumn(name = "gallery_id")
@@ -21,34 +21,49 @@ public class Image extends Timestampable {
 
 	
 	
+	
+	
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getSrc() {
 		return src;
 	}
+
 	public void setSrc(String src) {
 		this.src = src;
 	}
+
 	public Integer getPosition() {
 		return position;
 	}
+
 	public void setPosition(Integer position) {
 		this.position = position;
 	}
-	public Boolean getActive() {
-		return active;
+
+	public Boolean getIsActive() {
+		return isActive;
 	}
-	public void setActive(Boolean active) {
-		this.active = active;
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
+
 	public ImageGallery getGallery() {
 		return gallery;
 	}
+
 	public void setGallery(ImageGallery gallery) {
 		this.gallery = gallery;
 	}
+
+	
+	
+
 }

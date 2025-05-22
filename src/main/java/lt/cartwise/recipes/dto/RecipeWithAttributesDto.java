@@ -3,7 +3,6 @@ package lt.cartwise.recipes.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import lt.cartwise.recipes.entities.RecipeCategory;
 import lt.cartwise.translations.TranslationByLanguageDto;
 
 public class RecipeWithAttributesDto {
@@ -13,8 +12,8 @@ public class RecipeWithAttributesDto {
 	private Double portions;
 	private Boolean isPublic;
 	private List<TranslationByLanguageDto> translations;
-	private List<RecipeCategory> cetegories;
-	private List<IngridientResponseDto> ingidients;
+	private List<RecipeCategoriesDto> categories;
+	private List<RecipeIngridientsDto> ingidients;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	
@@ -22,13 +21,14 @@ public class RecipeWithAttributesDto {
 
 
 	public RecipeWithAttributesDto(Long id, String name, Double portions, Boolean isPublic, List<TranslationByLanguageDto> translations,
-			List<IngridientResponseDto> ingidients, LocalDateTime createdAt, LocalDateTime updatedAt) {
+			List<RecipeIngridientsDto> ingidients, List<RecipeCategoriesDto> categories, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.id = id;
 		this.name = name;
 		this.portions = portions;
 		this.isPublic = isPublic;
 		this.translations = translations;
 		this.ingidients = ingidients;
+		this.categories = categories;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
@@ -64,16 +64,16 @@ public class RecipeWithAttributesDto {
 	public void setTranslations(List<TranslationByLanguageDto> translations) {
 		this.translations = translations;
 	}
-	public List<RecipeCategory> getCetegories() {
-		return cetegories;
+	public List<RecipeCategoriesDto> getCategories() {
+		return categories;
 	}
-	public void setCetegories(List<RecipeCategory> cetegories) {
-		this.cetegories = cetegories;
+	public void setCategories(List<RecipeCategoriesDto> categories) {
+		this.categories = categories;
 	}
-	public List<IngridientResponseDto> getIngidients() {
+	public List<RecipeIngridientsDto> getIngidients() {
 		return ingidients;
 	}
-	public void setIngidients(List<IngridientResponseDto> ingidients) {
+	public void setIngidients(List<RecipeIngridientsDto> ingidients) {
 		this.ingidients = ingidients;
 	}
 	public LocalDateTime getCreatedAt() {

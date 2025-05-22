@@ -1,4 +1,4 @@
-package lt.cartwise.plans.entity;
+package lt.cartwise.plans.entities;
 
 import java.time.LocalDate;
 

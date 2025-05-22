@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 import lt.cartwise.enums.Model;
 import lt.cartwise.products.dto.ProductIngridientDto;
 import lt.cartwise.products.entities.Product;
-import lt.cartwise.recipes.dto.IngridientResponseDto;
+import lt.cartwise.recipes.dto.RecipeCategoriesDto;
+import lt.cartwise.recipes.dto.RecipeIngridientsDto;
 import lt.cartwise.recipes.dto.RecipeWithAttributesDto;
 import lt.cartwise.recipes.entities.Ingridient;
 import lt.cartwise.recipes.entities.Recipe;
+import lt.cartwise.recipes.entities.RecipeCategory;
 import lt.cartwise.recipes.repositories.RecipeRepository;
 import lt.cartwise.translations.Translation;
 import lt.cartwise.translations.TranslationByLanguageDto;
@@ -30,11 +32,16 @@ public class RecipeService {
 		this.translationMapper = translationMapper;
 	}
 
-	public List<RecipeWithAttributesDto> getAll() {
-		return recipeRepository.findAll().stream().map( this::toRecipeWithAttributesDto ).toList();
+	public List<RecipeWithAttributesDto> getAllPublic() {
+		return recipeRepository.findByIsPublic(true).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}
 	
-	
+	public boolean deleteById(Long id) {
+		if( !recipeRepository.existsById(id) )
+			return false;
+		recipeRepository.deleteById(id);
+		return true;
+	}
 	
 	
 	
@@ -46,17 +53,26 @@ public class RecipeService {
 					, recipe.getPortions()
 					, recipe.getIsPublic()
 					, this.getGroupedTranslations( Model.RECIPE, recipe.getId() )
-					, recipe.getIngidients().stream().map( this::toIngridientResponseDto ).toList()
+					, recipe.getIngidients().stream().map( this::toRecipeIngridientsDto ).toList()
+					, recipe.getCategories().stream().map( this::toRecipeCategoriesDto ).toList()
 					, recipe.getCreatedAt()
 					, recipe.getUpdatedAt()
 				);
 	}
 	
 	
-	private IngridientResponseDto toIngridientResponseDto(Ingridient item) {
-		return new IngridientResponseDto(item.getAmount()
+	private RecipeIngridientsDto toRecipeIngridientsDto(Ingridient item) {
+		return new RecipeIngridientsDto(item.getAmount()
 				, item.getUnits()
 				, this.toProductIngridientDto(item.getProduct())
+			);
+	}
+	
+	private RecipeCategoriesDto toRecipeCategoriesDto(RecipeCategory cat) {
+		return new RecipeCategoriesDto(cat.getId()
+				, cat.getName()
+				, cat.getSlug()
+				, cat.getIsActive()
 			);
 	}
 	
@@ -73,6 +89,8 @@ public class RecipeService {
 		
 		return translationMapper.toTranslationByLanguageDto(translations);
 	}
+
+	
 	
 	
 }

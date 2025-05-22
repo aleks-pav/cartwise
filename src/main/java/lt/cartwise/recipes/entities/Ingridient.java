@@ -18,7 +18,7 @@ public class Ingridient {
 	private Unit units;
 	
 	@ManyToOne
-	@JoinColumn(name = "recipe_id")
+	@JoinColumn(name = "recipe_id", nullable = false)
 	private Recipe recipe;
 	
 	@ManyToOne
