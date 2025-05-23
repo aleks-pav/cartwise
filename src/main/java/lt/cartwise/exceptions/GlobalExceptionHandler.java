@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,6 +20,17 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public ResponseEntity<Map<String,Object>> missingParams(MissingServletRequestParameterException ex) {
 		logger.debug("Vartotojas gavo MissingServletRequestParameterException klaidą");
+
+		Map<String,Object> error = new LinkedHashMap<>();
+		error.put("error", ex.getMessage());
+		error.put("timestamp", LocalDateTime.now());
+		
+		return ResponseEntity.status(400).body(error);
+	}
+	
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<Map<String,Object>> missingParams(MethodArgumentTypeMismatchException ex) {
+		logger.debug("Vartotojas gavo MethodArgumentTypeMismatchException klaidą");
 
 		Map<String,Object> error = new LinkedHashMap<>();
 		error.put("error", ex.getMessage());

@@ -9,7 +9,9 @@ public class RecipeWithAttributesDto {
 	
 	private Long id;
 	private String name;
-	private Double portions;
+	private Integer portions;
+	private Integer timePreparation;
+	private Integer timeCooking;
 	private Boolean isPublic;
 	private List<TranslationByLanguageDto> translations;
 	private List<RecipeCategoriesDto> categories;
@@ -20,11 +22,13 @@ public class RecipeWithAttributesDto {
 
 
 
-	public RecipeWithAttributesDto(Long id, String name, Double portions, Boolean isPublic, List<TranslationByLanguageDto> translations,
+	public RecipeWithAttributesDto(Long id, String name, Integer portions, Integer timePreparation, Integer timeCooking, Boolean isPublic, List<TranslationByLanguageDto> translations,
 			List<RecipeIngridientsDto> ingidients, List<RecipeCategoriesDto> categories, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.id = id;
 		this.name = name;
 		this.portions = portions;
+		this.timePreparation = timePreparation;
+		this.timeCooking = timeCooking;
 		this.isPublic = isPublic;
 		this.translations = translations;
 		this.ingidients = ingidients;
@@ -46,11 +50,23 @@ public class RecipeWithAttributesDto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Double getPortions() {
+	public Integer getPortions() {
 		return portions;
 	}
-	public void setPortions(Double portions) {
+	public void setPortions(Integer portions) {
 		this.portions = portions;
+	}
+	public Integer getTimePreparation() {
+		return timePreparation;
+	}
+	public void setTimePreparation(Integer timePreparation) {
+		this.timePreparation = timePreparation;
+	}
+	public Integer getTimeCooking() {
+		return timeCooking;
+	}
+	public void setTimeCooking(Integer timeCooking) {
+		this.timeCooking = timeCooking;
 	}
 	public Boolean getIsPublic() {
 		return isPublic;

@@ -1,6 +1,7 @@
 package lt.cartwise.recipes.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,10 @@ public class RecipeService {
 		return recipeRepository.findByIsPublic(true).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}
 	
+	public Optional<RecipeWithAttributesDto> getPublicById(Long id) {
+		return recipeRepository.findByIdAndIsPublic(id, true).map( this::toRecipeWithAttributesDto );
+	}
+	
 	public boolean deleteById(Long id) {
 		if( !recipeRepository.existsById(id) )
 			return false;
@@ -51,6 +56,8 @@ public class RecipeService {
 		return new RecipeWithAttributesDto(recipe.getId()
 					, recipe.getName()
 					, recipe.getPortions()
+					, recipe.getTimePreparation()
+					, recipe.getTimeCooking()
 					, recipe.getIsPublic()
 					, this.getGroupedTranslations( Model.RECIPE, recipe.getId() )
 					, recipe.getIngidients().stream().map( this::toRecipeIngridientsDto ).toList()
@@ -89,6 +96,8 @@ public class RecipeService {
 		
 		return translationMapper.toTranslationByLanguageDto(translations);
 	}
+
+	
 
 	
 	

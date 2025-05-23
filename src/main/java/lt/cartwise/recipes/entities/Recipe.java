@@ -15,7 +15,9 @@ public class Recipe extends Timestampable {
 	private Long id;
 	
 	private String name;
-	private Double portions;
+	private Integer portions;
+	private Integer timePreparation = 0;
+	private Integer timeCooking = 0;
 	private Boolean isPublic;
 	
 	@ManyToMany(mappedBy = "recipes")
@@ -42,12 +44,28 @@ public class Recipe extends Timestampable {
 		this.name = name;
 	}
 
-	public Double getPortions() {
+	public Integer getPortions() {
 		return portions;
 	}
 
-	public void setPortions(Double portions) {
+	public void setPortions(Integer portions) {
 		this.portions = portions;
+	}
+
+	public Integer getTimePreparation() {
+		return timePreparation;
+	}
+
+	public void setTimePreparation(Integer timePreparation) {
+		this.timePreparation = timePreparation;
+	}
+
+	public Integer getTimeCooking() {
+		return timeCooking;
+	}
+
+	public void setTimeCooking(Integer timeCooking) {
+		this.timeCooking = timeCooking;
 	}
 
 	public Boolean getIsPublic() {
