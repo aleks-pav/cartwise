@@ -42,8 +42,12 @@ public class RecipeService {
 		this.translationService = translationService;
 	}
 
-	public List<RecipeWithAttributesDto> getAllPublic() {
-		return recipeRepository.findByIsPublic(true).stream().map( this::toRecipeWithAttributesDto ).toList();
+	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic) {
+		return recipeRepository.findByIsPublic(isPublic).stream().map( this::toRecipeWithAttributesDto ).toList();
+	}
+	
+	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic, Long userId) {
+		return recipeRepository.findByIsPublicAndUserId(isPublic, userId).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}
 	
 	public Optional<RecipeWithAttributesDto> getPublicById(Long id) {

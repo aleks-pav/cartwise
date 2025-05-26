@@ -1,5 +1,7 @@
 package lt.cartwise.user.controllers;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,13 @@ public class UserRecipeController {
 	public UserRecipeController(UserService userService, RecipeService recipeService) {
 		this.userService = userService;
 		this.recipeService = recipeService;
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPrivate(@RequestParam Long uid)  throws UserNotFoundException{
+		if( userService.getUserById(uid).isEmpty() )
+			throw new UserNotFoundException("User not found");
+		return ResponseEntity.ok( recipeService.getAllIsPublic(false, uid) );
 	}
 	
 	@PostMapping

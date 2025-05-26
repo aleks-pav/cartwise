@@ -21,7 +21,7 @@ public class RecipeController {
 	
 	@GetMapping
 	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPublic(){
-		return ResponseEntity.ok( recipeService.getAllPublic() );
+		return ResponseEntity.ok( recipeService.getAllIsPublic(true) );
 //		return ResponseEntity.status(402).build();
 	}
 	
