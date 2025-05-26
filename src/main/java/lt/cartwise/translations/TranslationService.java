@@ -7,14 +7,57 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lt.cartwise.enums.Model;
+import lt.cartwise.exceptions.NoDefaultLanguageException;
 
 @Service
 public class TranslationService {
 	private TranslationRepository translationRepository;
+	private TranslationMapper translationMapper;
 	
 	
-	public TranslationService(TranslationRepository translationRepository) {
+	public TranslationService(TranslationRepository translationRepository, TranslationMapper translationMapper) {
 		this.translationRepository = translationRepository;
+		this.translationMapper = translationMapper;
+	}
+	
+	
+	public List<Translation> createTraslations(Model model, Long id, List<Translation> translationsInput) {
+		List<Translation> translations = translationsInput.stream().map( t -> {
+			Translation translation = new Translation();
+			translation.setTranslatableType(model);
+			translation.setTranslatableId(id);
+			translation.setLanguage( t.getLanguage().toUpperCase() );
+			translation.setFiledName( t.getFieldName().toLowerCase() );
+			translation.setValue( t.getValue() );
+			return translation;
+		}).toList();
+		
+		return translationRepository.saveAll( translations );
+	}
+	
+	public List<Translation> createTraslationsWithFallback(Model model, Long id, List<Translation> translationsInput) {
+		boolean hasEnglish = translationsInput.stream().anyMatch( t -> t.getLanguage().equals("EN"));
+		if(!hasEnglish)
+			throw new NoDefaultLanguageException("There is no default language");
+		
+		List<Translation> translations = translationsInput.stream().map( t -> {
+			Translation translation = new Translation();
+			translation.setTranslatableType(model);
+			translation.setTranslatableId(id);
+			translation.setLanguage( t.getLanguage().toUpperCase() );
+			translation.setFiledName( t.getFieldName().toLowerCase() );
+			translation.setValue( t.getValue() );
+			return translation;
+		}).toList();
+		
+		return translationRepository.saveAll( translations );
+	}
+	
+	public List<TranslationByLanguageDto> getGroupedTranslations(Model model, Long id) {
+		List<Translation> translations = translationRepository
+				.findByTranslatableTypeAndTranslatableId(model, id);
+		
+		return translationMapper.toTranslationByLanguageDto(translations);
 	}
 
 

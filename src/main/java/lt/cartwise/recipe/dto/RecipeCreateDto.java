@@ -3,6 +3,7 @@ package lt.cartwise.recipe.dto;
 import java.util.List;
 
 import jakarta.validation.constraints.*;
+import lt.cartwise.translations.Translation;
 import lt.cartwise.user.dto.UserDto;
 
 public class RecipeCreateDto {
@@ -36,8 +37,8 @@ public class RecipeCreateDto {
 	@NotEmpty(message = "Ingridients can't be empty")
 	private List<RecipeIngridientDto> ingidients;
 
-	
-	
+	@NotNull(message = "Translations can't be null")
+	private List<Translation> translations;
 	
 	
 	
@@ -104,6 +105,14 @@ public class RecipeCreateDto {
 
 	public void setIngidients(List<RecipeIngridientDto> ingidients) {
 		this.ingidients = ingidients;
+	}
+
+	public List<Translation> getTranslations() {
+		return translations;
+	}
+
+	public void setTranslations(List<Translation> translations) {
+		this.translations = translations;
 	}
 	
 	

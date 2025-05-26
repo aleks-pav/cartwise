@@ -14,7 +14,7 @@ public class ProductCategory {
 	
 	private String name;
 	
-	@ManyToMany
+	@ManyToMany(mappedBy = "categories")
 	private List<Product> products;
 
 	

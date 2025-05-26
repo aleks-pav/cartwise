@@ -1,6 +1,7 @@
 package lt.cartwise.translations;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lt.cartwise.enums.Model;
 
 @Entity
@@ -20,10 +21,15 @@ public class Translation {
 	@Enumerated(EnumType.STRING)
 	private Model translatableType;
 	
+	@Size(min = 2, max = 2, message = "Language must be ISO 639-1 (2 letters)")
 	private String language;
+	
+	@NotNull(message = "fieldName can't be null")
+	@NotBlank(message = "fieldName can't be empty")
 	private String fieldName;
 	
 	@Lob
+	@NotBlank(message = "Translation text can't be empty")
 	private String value;
 
 	

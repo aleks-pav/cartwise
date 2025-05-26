@@ -21,7 +21,11 @@ public class Product extends Timestampable {
 	@Enumerated(EnumType.STRING)
 	private Unit units;
 	
-	@ManyToMany(mappedBy = "products")
+	@ManyToMany
+	@JoinTable(name = "products_product_categories"
+			,joinColumns = @JoinColumn(name = "product_id")
+			, inverseJoinColumns = @JoinColumn(name = "category_id")
+	)
 	private List<ProductCategory> categories;
 	
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

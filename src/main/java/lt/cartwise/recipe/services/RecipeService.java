@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lt.cartwise.enums.Model;
 import lt.cartwise.exceptions.ProductNotFoundException;
@@ -12,7 +13,6 @@ import lt.cartwise.product.dto.ProductIngridientDto;
 import lt.cartwise.product.entities.Product;
 import lt.cartwise.product.repositories.ProductRepository;
 import lt.cartwise.recipe.dto.RecipeCategoriesDto;
-import lt.cartwise.recipe.dto.RecipeCategoryDto;
 import lt.cartwise.recipe.dto.RecipeCreateDto;
 import lt.cartwise.recipe.dto.RecipeIngridientDto;
 import lt.cartwise.recipe.dto.RecipeWithAttributesDto;
@@ -21,10 +21,7 @@ import lt.cartwise.recipe.entities.Recipe;
 import lt.cartwise.recipe.entities.RecipeCategory;
 import lt.cartwise.recipe.repositories.RecipeCategoryRepository;
 import lt.cartwise.recipe.repositories.RecipeRepository;
-import lt.cartwise.translations.Translation;
-import lt.cartwise.translations.TranslationByLanguageDto;
-import lt.cartwise.translations.TranslationMapper;
-import lt.cartwise.translations.TranslationRepository;
+import lt.cartwise.translations.TranslationService;
 import lt.cartwise.user.entities.User;
 
 @Service
@@ -33,19 +30,16 @@ public class RecipeService {
 	private RecipeRepository recipeRepository;
 	private RecipeCategoryRepository recipeCategoryRepository;
 	private ProductRepository productRepository;
-	private TranslationRepository translationRepository;
-	private TranslationMapper translationMapper;
+	private TranslationService translationService;
 
 	public RecipeService(RecipeRepository recipeRepository
 			, RecipeCategoryRepository recipeCategoryRepository
 			, ProductRepository productRepository
-			, TranslationRepository translationRepository
-			, TranslationMapper translationMapper) {
+			, TranslationService translationService) {
 		this.recipeRepository = recipeRepository;
 		this.recipeCategoryRepository = recipeCategoryRepository;
 		this.productRepository = productRepository;
-		this.translationRepository = translationRepository;
-		this.translationMapper = translationMapper;
+		this.translationService = translationService;
 	}
 
 	public List<RecipeWithAttributesDto> getAllPublic() {
@@ -63,6 +57,7 @@ public class RecipeService {
 		return true;
 	}
 	
+	@Transactional
 	public RecipeWithAttributesDto createRecipe(@Valid RecipeCreateDto recipeCreate, User user)  {
 		Recipe recipe = this.toEntity(recipeCreate);
 		recipe.setUser(user);
@@ -70,15 +65,19 @@ public class RecipeService {
 		
 		List<Ingridient> ingridients = recipeCreate.getIngidients().stream().map( ingridientDto -> {
 			Long productId = ingridientDto.getProduct().getId();
-			Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+			Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product (id: " + productId + ") not found"));
 			Ingridient ingridient = this.toIngridientEntity(ingridientDto);
 			ingridient.setProduct( product );
+			ingridient.setRecipe( recipe );
 			return ingridient;
 		}).toList();
 		
 		recipe.setIngidients(ingridients);
 		
-		return toRecipeWithAttributesDto( recipeRepository.save( recipe ) );
+		Recipe recipeNew = recipeRepository.save( recipe );
+		translationService.createTraslations(Model.RECIPE, recipeNew.getId(), recipeCreate.getTranslations() );
+		
+		return toRecipeWithAttributesDto( recipeNew );
 	}
 	
 	
@@ -93,7 +92,7 @@ public class RecipeService {
 		entity.setTimePreparation( dto.getTimePreparation() );
 		entity.setTimeCooking( dto.getTimeCooking() );
 		entity.setIsPublic( dto.getIsPublic() );
-//		TO DO handle User, Categories and Ingridients
+//		TODO handle User, Categories and Ingridients
 //		entity.setUser( user );
 //		entity.setCategories( dto.getCategories().stream().map( this::toRecipeCategoryEntity ).toList() );
 //		entity.setIngidients( dto.getIngidients().stream().map( this::toIngridientEntity ).toList() );
@@ -101,27 +100,12 @@ public class RecipeService {
 		return entity;
 	}
 	
-	private RecipeCategory toRecipeCategoryEntity(RecipeCategoryDto dto) {
-		RecipeCategory entity = new RecipeCategory();
-		entity.setId( dto.getId() );
-//		entity.setName( dto.getName() );
-//		entity.setSlug( dto.getSlug() );
-//		entity.setIsActive( dto.getIsActive() );
-		return entity;
-	}
-
 	private Ingridient toIngridientEntity(RecipeIngridientDto dto) {
 		Ingridient entity = new Ingridient();
 //		TO DO handle Product
 //		entity.setProduct( this.toProductEntity(dto.getProduct()) );
 		entity.setUnits( dto.getUnits() );
 		entity.setAmount( dto.getAmount() );
-		return entity;
-	}
-	
-	private Product toProductEntity(ProductIngridientDto dto) {
-		Product entity = new Product();
-		entity.setId( dto.getId() );
 		return entity;
 	}
 	
@@ -132,7 +116,7 @@ public class RecipeService {
 					, recipe.getTimePreparation()
 					, recipe.getTimeCooking()
 					, recipe.getIsPublic()
-					, this.getGroupedTranslations( Model.RECIPE, recipe.getId() )
+					, translationService.getGroupedTranslations( Model.RECIPE, recipe.getId() )
 					, recipe.getIngidients().stream().map( this::toRecipeIngridientsDto ).toList()
 					, recipe.getCategories().stream().map( this::toRecipeCategoriesDto ).toList()
 					, recipe.getCreatedAt()
@@ -160,20 +144,13 @@ public class RecipeService {
 		return new ProductIngridientDto(product.getId()
 				, product.getName()
 				, product.getCalories()
-				, this.getGroupedTranslations( Model.PRODUCT, product.getId() )
+				, translationService.getGroupedTranslations( Model.PRODUCT, product.getId() )
 			);
 	}
 
-	public List<TranslationByLanguageDto> getGroupedTranslations(Model model, Long id) {
-		List<Translation> translations = translationRepository
-				.findByTranslatableTypeAndTranslatableId(model, id);
+	
+
 		
-		return translationMapper.toTranslationByLanguageDto(translations);
-	}
-
-	
-
-	
 
 	
 	

@@ -20,25 +20,36 @@ public class GlobalExceptionHandler {
 	
 	
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<Map<String,Object>> missingParams(UserNotFoundException ex) {
+	public ResponseEntity<Map<String,Object>> notFound(UserNotFoundException ex) {
 		logger.debug("Vartotojas nerastas");
 
 		Map<String,Object> error = new LinkedHashMap<>();
 		error.put("error", ex.getMessage());
 		error.put("timestamp", LocalDateTime.now());
 		
-		return ResponseEntity.status(400).body(error);
+		return ResponseEntity.status(404).body(error);
 	}
 	
 	@ExceptionHandler(ProductNotFoundException.class)
-	public ResponseEntity<Map<String,Object>> missingParams(ProductNotFoundException ex) {
+	public ResponseEntity<Map<String,Object>> notFound(ProductNotFoundException ex) {
 		logger.debug("Produktas nerastas");
 
 		Map<String,Object> error = new LinkedHashMap<>();
 		error.put("error", ex.getMessage());
 		error.put("timestamp", LocalDateTime.now());
 		
-		return ResponseEntity.status(400).body(error);
+		return ResponseEntity.status(404).body(error);
+	}
+	
+	@ExceptionHandler(NoDefaultLanguageException.class)
+	public ResponseEntity<Map<String,Object>> notFound(NoDefaultLanguageException ex) {
+		logger.debug("Vartotojas nerastas");
+
+		Map<String,Object> error = new LinkedHashMap<>();
+		error.put("error", ex.getMessage());
+		error.put("timestamp", LocalDateTime.now());
+		
+		return ResponseEntity.status(404).body(error);
 	}
 	
 	
