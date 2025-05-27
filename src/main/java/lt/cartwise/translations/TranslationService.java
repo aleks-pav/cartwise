@@ -1,5 +1,6 @@
 package lt.cartwise.translations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,6 +57,17 @@ public class TranslationService {
 	public List<TranslationByLanguageDto> getGroupedTranslations(Model model, Long id) {
 		List<Translation> translations = translationRepository
 				.findByTranslatableTypeAndTranslatableId(model, id);
+		
+		return translationMapper.toTranslationByLanguageDto(translations);
+	}
+	
+	public List<TranslationByLanguageDto> getGroupedTranslations(Model model, Long id, String language) {
+		List<String> languages = new ArrayList<>();
+		languages.add("EN");
+		languages.add(language);
+		
+		List<Translation> translations = translationRepository
+				.findByTranslatableTypeAndTranslatableIdAndLanguageIn(model, id, languages);
 		
 		return translationMapper.toTranslationByLanguageDto(translations);
 	}
