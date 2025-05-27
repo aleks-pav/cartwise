@@ -50,8 +50,12 @@ public class RecipeService {
 		return recipeRepository.findByIsPublicAndUserId(isPublic, userId).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}
 	
-	public Optional<RecipeWithAttributesDto> getPublicById(Long id) {
+	public Optional<RecipeWithAttributesDto> getIsPublicById(boolean isPublic, Long id) {
 		return recipeRepository.findByIdAndIsPublic(id, true).map( this::toRecipeWithAttributesDto );
+	}
+	
+	public Optional<RecipeWithAttributesDto> getIsPublicById(boolean isPublic, Long id, Long userId) {
+		return recipeRepository.findByIdAndIsPublicAndUserId(id, isPublic, userId).map( this::toRecipeWithAttributesDto );
 	}
 	
 	public boolean deleteById(Long id) {

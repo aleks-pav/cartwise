@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -78,6 +79,20 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String,Object>> missingParams(MethodArgumentNotValidException ex) {
 		logger.debug("Validacijos klaida");
+		
+		Map<String,Object> error = new LinkedHashMap<>();
+		ex.getBindingResult().getFieldErrors().forEach(err ->
+			error.put(err.getField(), err.getDefaultMessage())
+	    );
+		error.put("timestamp", LocalDateTime.now());
+		
+		return ResponseEntity.status(400).body(error);
+	}
+	
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<Map<String,Object>> missingParams(HttpMessageNotReadableException ex) {
+		logger.debug("Neįskaitomas JSON: " + ex.getMessage());
 
 		Map<String,Object> error = new LinkedHashMap<>();
 		error.put("error", ex.getMessage());
@@ -85,8 +100,6 @@ public class GlobalExceptionHandler {
 		
 		return ResponseEntity.status(400).body(error);
 	}
-	
-	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Map<String,Object>> handleGenericException(Exception ex) {

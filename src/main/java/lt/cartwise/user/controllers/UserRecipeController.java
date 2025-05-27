@@ -32,6 +32,13 @@ public class UserRecipeController {
 		return ResponseEntity.ok( recipeService.getAllIsPublic(false, uid) );
 	}
 	
+	@GetMapping("{id}")
+	public ResponseEntity<RecipeWithAttributesDto> getById(@PathVariable Long id, @RequestParam Long uid)  throws UserNotFoundException{
+		if( userService.getUserById(uid).isEmpty() )
+			throw new UserNotFoundException("User not found");
+		return ResponseEntity.of( recipeService.getIsPublicById(false, id, uid) );
+	}
+	
 	@PostMapping
 	public ResponseEntity<RecipeWithAttributesDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeCreate) throws UserNotFoundException{
 		User user = userService.getUserById( recipeCreate.getUser().getId() ).orElseThrow( () -> new UserNotFoundException("User not found") );

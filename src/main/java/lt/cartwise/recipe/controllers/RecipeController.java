@@ -27,7 +27,7 @@ public class RecipeController {
 	
 	@GetMapping("{id}")
 	public ResponseEntity<RecipeWithAttributesDto> getPublicById(@PathVariable Long id){
-		return ResponseEntity.of( recipeService.getPublicById(id) );
+		return ResponseEntity.of( recipeService.getIsPublicById(true, id) );
 	}
 	
 	@DeleteMapping("{id}")

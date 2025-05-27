@@ -13,4 +13,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 	List<Recipe> findByIsPublic(Boolean isPublic);
 	List<Recipe> findByIsPublicAndUserId(Boolean isPublic, Long userId);
 	Optional<Recipe> findByIdAndIsPublic(Long id, Boolean isPublic);
+	Optional<Recipe> findByIdAndIsPublicAndUserId(Long id, Boolean isPublic, Long userId);
 }
