@@ -1,18 +1,25 @@
 package lt.cartwise.plan.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
+import lt.cartwise.enums.Unit;
 import lt.cartwise.exceptions.NotFoundException;
 import lt.cartwise.plan.dto.PlanCreateDto;
 import lt.cartwise.plan.dto.PlanDto;
 import lt.cartwise.plan.dto.PlanWithAttributesDto;
 import lt.cartwise.plan.entities.Plan;
+import lt.cartwise.plan.entities.PlanRecipe;
 import lt.cartwise.plan.mappers.PlanMapper;
 import lt.cartwise.plan.repositories.PlanRepository;
+import lt.cartwise.product.entities.Product;
+import lt.cartwise.recipe.entities.Ingridient;
 import lt.cartwise.user.dto.UserDto;
 import lt.cartwise.user.entities.User;
 import lt.cartwise.user.services.UserService;
@@ -20,6 +27,7 @@ import lt.cartwise.user.services.UserService;
 @Service
 public class PlanService {
 	
+	// TODO "final" missing in whole application
 	private PlanRepository planRepository;
 	private PlanMapper planMapper;
 	private UserService userService;
@@ -33,6 +41,10 @@ public class PlanService {
 	public List<PlanDto> getAllByUser(Long uid) {
 		return planRepository.findByUserId(uid).stream().map(this::toPlanDto).toList();
 	}
+	
+	public Optional<Plan> getPlan(Long id, UserDto userDto) {
+		return planRepository.findByIdAndUserId(id, userDto.getId());
+	}
 
 	public Optional<PlanWithAttributesDto> getByIdByUser(Long id, UserDto userDto) {
 		Optional<Plan> optionalPlan = planRepository.findByIdAndUserId(id, userDto.getId());
@@ -42,7 +54,7 @@ public class PlanService {
 		return Optional.of( this.toPlanWithAttributesDto( optionalPlan.get() ));
 	}
 	
-	public PlanDto createPlan(@Valid PlanCreateDto planCreate, UserDto userDto) throws NotFoundException {
+	public PlanDto createPlan(@Valid PlanCreateDto planCreate, UserDto userDto) {
 		User user = userService.getUserById( userDto.getId() ).orElseThrow( () -> new NotFoundException("User not found") );
 		Plan plan = this.toEntity(planCreate);
 		plan.setIsActive( true );
@@ -56,10 +68,36 @@ public class PlanService {
 	public Optional<Plan> getActiveByUser(Long userId) {
 		return planRepository.findByIsActiveAndUserId(true, userId).stream().findFirst();
 	}
-
 	
 	
 	
+	public Map<Product, Map<Unit, Double>> calculateProducts(Long planId) {
+		Plan plan = planRepository.findById(planId).orElseThrow( () -> new NotFoundException("Plan not found") );
+		List<PlanRecipe> recipes = plan.getRecipes();
+		
+		return recipes.stream()
+				.flatMap(planRecipe -> {
+					Double ratio = planRecipe.getPortions() / planRecipe.getRecipe().getPortions();
+					return planRecipe.getRecipe().getIngidients().stream()
+							.map(ing -> {
+								Ingridient scaled = new Ingridient();
+								scaled.setProduct( ing.getProduct() );
+								scaled.setUnits( ing.getUnits() );
+								scaled.setAmount( ing.getAmount() * ratio );
+								return scaled;
+							});
+				})
+				.collect( Collectors.toMap(Ingridient::getProduct
+						, ingridient -> {
+							Map<Unit, Double> amounts = new HashMap<>();
+							amounts.put( ingridient.getUnits(), ingridient.getAmount() );
+							return amounts;
+						}
+						, (p1, p2) -> {
+							p2.forEach((unit, amount) -> p1.merge(unit, amount, Double::sum));
+							return p1;
+						}));
+	}
 	
 	private void deactivateAll(Long userId) {
 		List<Plan> plans = planRepository.findByIsActiveAndUserId(true, userId).stream().map( plan -> {
