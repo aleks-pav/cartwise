@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lt.cartwise.Timestampable;
+import lt.cartwise.shopping.entities.ShoppingList;
 import lt.cartwise.user.entities.User;
 
 @Entity
@@ -26,6 +27,9 @@ public class Plan extends Timestampable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@OneToOne(mappedBy = "plan", cascade = CascadeType.ALL)
+	private ShoppingList shoppingList;
 	
 
 	public Long getId() {
