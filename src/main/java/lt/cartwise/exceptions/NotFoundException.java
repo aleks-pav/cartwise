@@ -1,12 +1,12 @@
 package lt.cartwise.exceptions;
 
-public class ProductNotFoundException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 		/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public ProductNotFoundException(String message) {
+	public NotFoundException(String message) {
 		super(message);
 	}
 		

@@ -20,20 +20,9 @@ public class GlobalExceptionHandler {
 	Logger logger = LoggerFactory.getLogger( GlobalExceptionHandler.class );
 	
 	
-	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<Map<String,Object>> notFound(UserNotFoundException ex) {
-		logger.debug("Vartotojas nerastas");
-
-		Map<String,Object> error = new LinkedHashMap<>();
-		error.put("error", ex.getMessage());
-		error.put("timestamp", LocalDateTime.now());
-		
-		return ResponseEntity.status(404).body(error);
-	}
-	
-	@ExceptionHandler(ProductNotFoundException.class)
-	public ResponseEntity<Map<String,Object>> notFound(ProductNotFoundException ex) {
-		logger.debug("Produktas nerastas");
+	@ExceptionHandler(NotFoundException.class)
+	public ResponseEntity<Map<String,Object>> notFound(NotFoundException ex) {
+		logger.debug("Vartotojas gavo NotFoundException");
 
 		Map<String,Object> error = new LinkedHashMap<>();
 		error.put("error", ex.getMessage());

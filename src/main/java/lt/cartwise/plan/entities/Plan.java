@@ -15,9 +15,13 @@ public class Plan extends Timestampable {
 	private Long id;
 	
 	private String name;
+	private Boolean isActive;
 	
 	@OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
 	private List<PlanProduct> products;
+	
+	@OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+	private List<PlanRecipe> recipes;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -36,11 +40,24 @@ public class Plan extends Timestampable {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public Boolean getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 	public List<PlanProduct> getProducts() {
 		return products;
 	}
 	public void setProducts(List<PlanProduct> products) {
 		this.products = products;
+	}
+	public List<PlanRecipe> getRecipes() {
+		return recipes;
+	}
+	public void setRecipes(List<PlanRecipe> recipes) {
+		this.recipes = recipes;
 	}
 	public User getUser() {
 		return user;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lt.cartwise.enums.Model;
-import lt.cartwise.exceptions.ProductNotFoundException;
+import lt.cartwise.exceptions.NotFoundException;
 import lt.cartwise.product.dto.ProductIngridientDto;
 import lt.cartwise.product.entities.Product;
 import lt.cartwise.product.repositories.ProductRepository;
@@ -19,6 +19,7 @@ import lt.cartwise.recipe.dto.RecipeWithAttributesDto;
 import lt.cartwise.recipe.entities.Ingridient;
 import lt.cartwise.recipe.entities.Recipe;
 import lt.cartwise.recipe.entities.RecipeCategory;
+import lt.cartwise.recipe.mappers.RecipeMapper;
 import lt.cartwise.recipe.repositories.RecipeCategoryRepository;
 import lt.cartwise.recipe.repositories.RecipeRepository;
 import lt.cartwise.translations.TranslationService;
@@ -30,15 +31,18 @@ public class RecipeService {
 	private RecipeRepository recipeRepository;
 	private RecipeCategoryRepository recipeCategoryRepository;
 	private ProductRepository productRepository;
+	private RecipeMapper recipeMapper;
 	private TranslationService translationService;
 
 	public RecipeService(RecipeRepository recipeRepository
 			, RecipeCategoryRepository recipeCategoryRepository
 			, ProductRepository productRepository
+			, RecipeMapper recipeMapper
 			, TranslationService translationService) {
 		this.recipeRepository = recipeRepository;
 		this.recipeCategoryRepository = recipeCategoryRepository;
 		this.productRepository = productRepository;
+		this.recipeMapper = recipeMapper;
 		this.translationService = translationService;
 	}
 
@@ -67,13 +71,13 @@ public class RecipeService {
 	
 	@Transactional
 	public RecipeWithAttributesDto createRecipe(@Valid RecipeCreateDto recipeCreate, User user)  {
-		Recipe recipe = this.toEntity(recipeCreate);
+		Recipe recipe = recipeMapper.toEntity(recipeCreate);
 		recipe.setUser(user);
 		recipe.setCategories( recipeCategoryRepository.findAllById( recipeCreate.getCategories().stream().map(cat -> cat.getId()).toList() ) );
 		
 		List<Ingridient> ingridients = recipeCreate.getIngidients().stream().map( ingridientDto -> {
 			Long productId = ingridientDto.getProduct().getId();
-			Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product (id: " + productId + ") not found"));
+			Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product (id: " + productId + ") not found"));
 			Ingridient ingridient = this.toIngridientEntity(ingridientDto);
 			ingridient.setProduct( product );
 			ingridient.setRecipe( recipe );
@@ -93,20 +97,7 @@ public class RecipeService {
 	
 	
 	
-	private Recipe toEntity(RecipeCreateDto dto) {
-		Recipe entity = new Recipe();
-		entity.setName( dto.getName() );
-		entity.setPortions( dto.getPortions() );
-		entity.setTimePreparation( dto.getTimePreparation() );
-		entity.setTimeCooking( dto.getTimeCooking() );
-		entity.setIsPublic( dto.getIsPublic() );
-//		TODO handle User, Categories and Ingridients
-//		entity.setUser( user );
-//		entity.setCategories( dto.getCategories().stream().map( this::toRecipeCategoryEntity ).toList() );
-//		entity.setIngidients( dto.getIngidients().stream().map( this::toIngridientEntity ).toList() );
-		
-		return entity;
-	}
+	
 	
 	private Ingridient toIngridientEntity(RecipeIngridientDto dto) {
 		Ingridient entity = new Ingridient();

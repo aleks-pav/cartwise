@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import lt.cartwise.exceptions.UserNotFoundException;
+import lt.cartwise.exceptions.NotFoundException;
 import lt.cartwise.recipe.dto.RecipeCreateDto;
 import lt.cartwise.recipe.dto.RecipeWithAttributesDto;
 import lt.cartwise.recipe.services.RecipeService;
@@ -26,22 +26,22 @@ public class UserRecipeController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPrivate(@RequestParam Long uid)  throws UserNotFoundException{
+	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPrivate(@RequestParam Long uid){
 		if( userService.getUserById(uid).isEmpty() )
-			throw new UserNotFoundException("User not found");
+			throw new NotFoundException("User not found");
 		return ResponseEntity.ok( recipeService.getAllIsPublic(false, uid) );
 	}
 	
 	@GetMapping("{id}")
-	public ResponseEntity<RecipeWithAttributesDto> getById(@PathVariable Long id, @RequestParam Long uid)  throws UserNotFoundException{
+	public ResponseEntity<RecipeWithAttributesDto> getById(@PathVariable Long id, @RequestParam Long uid){
 		if( userService.getUserById(uid).isEmpty() )
-			throw new UserNotFoundException("User not found");
+			throw new NotFoundException("User not found");
 		return ResponseEntity.of( recipeService.getIsPublicById(false, id, uid) );
 	}
 	
 	@PostMapping
-	public ResponseEntity<RecipeWithAttributesDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeCreate) throws UserNotFoundException{
-		User user = userService.getUserById( recipeCreate.getUser().getId() ).orElseThrow( () -> new UserNotFoundException("User not found") );
+	public ResponseEntity<RecipeWithAttributesDto> createRecipe(@Valid @RequestBody RecipeCreateDto recipeCreate){
+		User user = userService.getUserById( recipeCreate.getUser().getId() ).orElseThrow( () -> new NotFoundException("User not found") );
 		return ResponseEntity.ok(recipeService.createRecipe(recipeCreate, user));
 	}
 }
