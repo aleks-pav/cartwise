@@ -12,8 +12,8 @@ import lt.cartwise.exceptions.NoDefaultLanguageException;
 
 @Service
 public class TranslationService {
-	private TranslationRepository translationRepository;
-	private TranslationMapper translationMapper;
+	private final TranslationRepository translationRepository;
+	private final TranslationMapper translationMapper;
 	
 	
 	public TranslationService(TranslationRepository translationRepository, TranslationMapper translationMapper) {

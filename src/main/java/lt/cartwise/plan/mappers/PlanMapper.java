@@ -8,7 +8,7 @@ import lt.cartwise.recipe.mappers.RecipeMapper;
 
 @Component
 public class PlanMapper {
-	private RecipeMapper recipeMapper;
+	private final RecipeMapper recipeMapper;
 	
 	public PlanMapper(RecipeMapper recipeMapper) {
 		this.recipeMapper = recipeMapper;

@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lt.cartwise.enums.Unit;
 import lt.cartwise.exceptions.NotFoundException;
 import lt.cartwise.plan.dto.PlanCreateDto;
+import lt.cartwise.plan.dto.PlanDeleteDto;
 import lt.cartwise.plan.dto.PlanDto;
 import lt.cartwise.plan.dto.PlanWithAttributesDto;
 import lt.cartwise.plan.entities.Plan;
@@ -39,30 +40,36 @@ public class PlanService {
 	}
 
 	public List<PlanDto> getAllByUser(Long uid) {
-		return planRepository.findByUserId(uid).stream().map(this::toPlanDto).toList();
+		return planRepository.findByUserIdOrderByCreatedAtDesc(uid).stream().map(this::toPlanDto).toList();
 	}
 	
 	public Optional<Plan> getPlan(Long id, UserDto userDto) {
 		return planRepository.findByIdAndUserId(id, userDto.getId());
 	}
 
-	public Optional<PlanWithAttributesDto> getByIdByUser(Long id, UserDto userDto) {
-		Optional<Plan> optionalPlan = planRepository.findByIdAndUserId(id, userDto.getId());
+	public Optional<PlanWithAttributesDto> getByIdByUser(Long id, Long userId) {
+		Optional<Plan> optionalPlan = planRepository.findByIdAndUserId(id, userId);
 		if( optionalPlan.isEmpty() )
 			return Optional.empty();
 		
 		return Optional.of( this.toPlanWithAttributesDto( optionalPlan.get() ));
 	}
 	
-	public PlanDto createPlan(@Valid PlanCreateDto planCreate, UserDto userDto) {
-		User user = userService.getUserById( userDto.getId() ).orElseThrow( () -> new NotFoundException("User not found") );
+	public PlanDto createPlan(PlanCreateDto planCreate) {
+		User user = userService.getUserById( planCreate.getUserId() ).orElseThrow( () -> new NotFoundException("User not found") );
 		Plan plan = this.toEntity(planCreate);
 		plan.setIsActive( true );
 		plan.setUser( user );
 		
-		deactivateAll( userDto.getId() );
+		deactivateAll( planCreate.getUserId() );
 		
 		return this.toPlanDto( planRepository.save(plan) );
+	}
+	
+	public void deletePlan(@Valid PlanDeleteDto planDelete) {
+		User user = userService.getUserById( planDelete.getUserId() ).orElseThrow( () -> new NotFoundException("User not found") );
+		Plan plan = planRepository.findByIdAndUserId(planDelete.getId(), user.getId()).orElseThrow( () -> new NotFoundException("Plan with user not found") );
+		planRepository.delete(plan);
 	}
 	
 	public Optional<Plan> getActiveByUser(Long userId) {
@@ -129,6 +136,8 @@ public class PlanService {
 		plan.setName( dto.getName() );
 		return plan;
 	}
+
+	
 	
 	
 }

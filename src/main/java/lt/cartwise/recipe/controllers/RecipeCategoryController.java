@@ -13,7 +13,7 @@ import lt.cartwise.recipe.services.RecipeCategoryService;
 @RequestMapping("/api/recipes/categories")
 public class RecipeCategoryController {
 
-	private RecipeCategoryService recipeCategoryService;
+	private final RecipeCategoryService recipeCategoryService;
 
 	public RecipeCategoryController(RecipeCategoryService recipeCategoryService) {
 		this.recipeCategoryService = recipeCategoryService;

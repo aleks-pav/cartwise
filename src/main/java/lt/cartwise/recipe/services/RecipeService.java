@@ -28,11 +28,11 @@ import lt.cartwise.user.entities.User;
 @Service
 public class RecipeService {
 	
-	private RecipeRepository recipeRepository;
-	private RecipeCategoryRepository recipeCategoryRepository;
-	private ProductRepository productRepository;
-	private RecipeMapper recipeMapper;
-	private TranslationService translationService;
+	private final RecipeRepository recipeRepository;
+	private final RecipeCategoryRepository recipeCategoryRepository;
+	private final ProductRepository productRepository;
+	private final RecipeMapper recipeMapper;
+	private final TranslationService translationService;
 
 	public RecipeService(RecipeRepository recipeRepository
 			, RecipeCategoryRepository recipeCategoryRepository

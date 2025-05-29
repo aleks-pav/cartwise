@@ -12,7 +12,7 @@ import lt.cartwise.translations.TranslationService;
 @Component
 public class RecipeMapper {
 	
-	private TranslationService translationService;
+	private final TranslationService translationService;
 	
 	public RecipeMapper(TranslationService translationService) {
 		this.translationService = translationService;

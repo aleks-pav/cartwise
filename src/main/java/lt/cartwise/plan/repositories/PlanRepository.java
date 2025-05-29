@@ -10,7 +10,7 @@ import lt.cartwise.plan.entities.Plan;
 
 @Repository
 public interface PlanRepository extends JpaRepository<Plan,Long> {
-	List<Plan> findByUserId(Long userId);
+	List<Plan> findByUserIdOrderByCreatedAtDesc(Long userId);
 	List<Plan> findByIsActiveAndUserId(Boolean isActive, Long userId);
 	Optional<Plan> findByIdAndUserId(Long id, Long userId);
 }

@@ -12,7 +12,7 @@ import lt.cartwise.plan.services.PlanRecipeService;
 @RequestMapping("/api/plans/recipes")
 public class PlanRecipeController {
 	
-	private PlanRecipeService planRecipeService;
+	private final PlanRecipeService planRecipeService;
 
 	public PlanRecipeController(PlanRecipeService planRecipeService) {
 		this.planRecipeService = planRecipeService;

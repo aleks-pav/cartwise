@@ -22,7 +22,7 @@ import lt.cartwise.user.dto.UserDto;
 
 @Service
 public class ShoppingListService {
-	private ShoppingListRepository shoppingListRepository;
+	private final ShoppingListRepository shoppingListRepository;
 	private final ShoppingListMapper shoppingListMapper;
 	private final PlanService planService;
 	

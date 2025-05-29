@@ -13,8 +13,8 @@ import lt.cartwise.translations.TranslationService;
 @Service
 public class RecipeCategoryService {
 	
-	private RecipeCategoryRepository recipeCategoryRepository;
-	private TranslationService translationService;
+	private final RecipeCategoryRepository recipeCategoryRepository;
+	private final TranslationService translationService;
 
 	public RecipeCategoryService(RecipeCategoryRepository recipeCategoryRepository
 			, TranslationService translationService) {

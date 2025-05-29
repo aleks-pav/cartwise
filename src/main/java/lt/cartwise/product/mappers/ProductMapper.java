@@ -10,7 +10,7 @@ import lt.cartwise.translations.TranslationService;
 @Component
 public class ProductMapper {
 
-	private TranslationService translationService;
+	private final TranslationService translationService;
 
 	public ProductMapper(TranslationService translationService) {
 		this.translationService = translationService;

@@ -14,8 +14,8 @@ import lt.cartwise.shopping.services.ShoppingListService;
 @RequestMapping("/api/shopping")
 public class ShoppingListController {
 	
-	private ShoppingListService shoppingListService;
-	private ShoppingListProductService shoppingListProductService;
+	private final ShoppingListService shoppingListService;
+	private final ShoppingListProductService shoppingListProductService;
 
 	public ShoppingListController(ShoppingListService shoppingListService, ShoppingListProductService shoppingListProductService) {
 		this.shoppingListService = shoppingListService;

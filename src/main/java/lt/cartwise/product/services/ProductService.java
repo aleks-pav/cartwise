@@ -13,8 +13,8 @@ import lt.cartwise.translations.TranslationService;
 @Service
 public class ProductService {
 	
-	private ProductRepository productRepository;
-	private TranslationService translationService;
+	private final ProductRepository productRepository;
+	private final TranslationService translationService;
 
 	public ProductService(ProductRepository productRepository, TranslationService translationService) {
 		this.productRepository = productRepository;

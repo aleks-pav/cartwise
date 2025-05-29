@@ -17,8 +17,8 @@ import lt.cartwise.user.services.UserService;
 @CrossOrigin
 @RequestMapping("/api/users/recipes")
 public class UserRecipeController {
-	private UserService userService;
-	private RecipeService recipeService;
+	private final UserService userService;
+	private final RecipeService recipeService;
 
 	public UserRecipeController(UserService userService, RecipeService recipeService) {
 		this.userService = userService;

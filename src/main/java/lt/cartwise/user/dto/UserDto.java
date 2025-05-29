@@ -7,6 +7,7 @@ public class UserDto {
 	private String name;
 	
 	
+	public UserDto() {};
 	public UserDto(Long id) {
 		this.id = id;
 	}
