@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 
 import lt.cartwise.shopping.dto.ShoppingListCreateDto;
 import lt.cartwise.shopping.dto.ShoppingListDto;
+import lt.cartwise.shopping.dto.ShoppingListProductDto;
+import lt.cartwise.shopping.services.ShoppingListProductService;
 import lt.cartwise.shopping.services.ShoppingListService;
 
 @RestController
@@ -13,9 +15,11 @@ import lt.cartwise.shopping.services.ShoppingListService;
 public class ShoppingListController {
 	
 	private ShoppingListService shoppingListService;
+	private ShoppingListProductService shoppingListProductService;
 
-	public ShoppingListController(ShoppingListService shoppingListService) {
+	public ShoppingListController(ShoppingListService shoppingListService, ShoppingListProductService shoppingListProductService) {
 		this.shoppingListService = shoppingListService;
+		this.shoppingListProductService = shoppingListProductService;
 	}
 	
 	@GetMapping("/{id}")
@@ -25,7 +29,11 @@ public class ShoppingListController {
 	
 	@PostMapping
 	public ResponseEntity<String> createShoppingList(@RequestBody ShoppingListCreateDto dto){
-		shoppingListService.createShoppingList(dto);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok( shoppingListService.createShoppingList(dto) );
+	}
+	
+	@PatchMapping("/{id}")
+	public ResponseEntity<ShoppingListProductDto> switchCompleted(@PathVariable String id, @RequestBody ShoppingListProductDto dto){
+		return ResponseEntity.ok( shoppingListProductService.switchCompleted(id, dto ));
 	}
 }
