@@ -73,7 +73,11 @@ public class PlanService {
 	}
 	
 	public Optional<Plan> getActiveByUser(Long userId) {
-		return planRepository.findByIsActiveAndUserId(true, userId).stream().findFirst();
+		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, userId).stream().findFirst();
+	}
+	
+	public Optional<Long> getActivePlanIdByUser(Long userId) {
+		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, userId).stream().findFirst().map(p -> p.getId());
 	}
 	
 	
@@ -107,7 +111,7 @@ public class PlanService {
 	}
 	
 	private void deactivateAll(Long userId) {
-		List<Plan> plans = planRepository.findByIsActiveAndUserId(true, userId).stream().map( plan -> {
+		List<Plan> plans = planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, userId).stream().map( plan -> {
 			plan.setIsActive(false);
 			return plan;
 		}).toList();

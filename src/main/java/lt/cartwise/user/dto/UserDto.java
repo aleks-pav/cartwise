@@ -5,16 +5,18 @@ public class UserDto {
 	private Long id;
 	private String email;
 	private String name;
+	private String avatarSrc;
 	
 	
-	public UserDto() {};
 	public UserDto(Long id) {
 		this.id = id;
 	}
-	public UserDto(Long id, String email, String name) {
+	
+	public UserDto(Long id, String email, String name, String avatarSrc) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
+		this.avatarSrc = avatarSrc;
 	}
 	
 	
@@ -36,6 +38,13 @@ public class UserDto {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public String getAvatarSrc() {
+		return avatarSrc;
+	}
+	public void setAvatarSrc(String avatarSrc) {
+		this.avatarSrc = avatarSrc;
+	}
+	
 	
 	
 }

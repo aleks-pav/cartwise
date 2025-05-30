@@ -29,6 +29,11 @@ public class PlanController {
 		return ResponseEntity.ok( planService.getAllByUser(uid) );
 	}
 	
+	@GetMapping("/active")
+	public ResponseEntity<Long> getActive(@RequestParam Long uid){
+		return ResponseEntity.of( planService.getActivePlanIdByUser(uid) );
+	}
+	
 	// TODO get with full data (recipes and products)
 	@GetMapping("/{id}")
 	public ResponseEntity<PlanWithAttributesDto> getById(@PathVariable Long id, @RequestParam Long uid){

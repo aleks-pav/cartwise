@@ -1,5 +1,6 @@
 package lt.cartwise.exceptions;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -89,6 +90,19 @@ public class GlobalExceptionHandler {
 		
 		return ResponseEntity.status(400).body(error);
 	}
+	
+	
+	@ExceptionHandler(IOException.class)
+	public ResponseEntity<Map<String,Object>> inputOutput(IOException ex) {
+		logger.debug("Vartotojas gavo IOException");
+
+		Map<String,Object> error = new LinkedHashMap<>();
+		error.put("error", ex.getMessage());
+		error.put("timestamp", LocalDateTime.now());
+		
+		return ResponseEntity.status(400).body(error);
+	}
+	
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Map<String,Object>> handleGenericException(Exception ex) {

@@ -24,4 +24,12 @@ public class UserMapper {
 		user.setId( userDto.getId() );
 		return user;
 	}
+	
+	public UserDto toDto(User entity) {
+		String avatarSrc = ( entity.getAvatar() != null ) ? "/api/users/" + entity.getId() + "/avatar" : null;
+		return new UserDto(entity.getId()
+				, entity.getEmail()
+				, entity.getName()
+				, avatarSrc);
+	}
 }

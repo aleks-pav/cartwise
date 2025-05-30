@@ -2,20 +2,20 @@ package lt.cartwise.plan.dto;
 
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lt.cartwise.enums.MealType;
 
 public class PlanRecipeCreateDto {
 
-	@NotEmpty(message = "Portions amount required")
+	@NotNull(message = "Portions amount required")
 	private Double portions;
 	private LocalDate planDate;
 	private MealType type;
 	
-	@NotEmpty(message = "Recipe id is required")
+	@NotNull(message = "Recipe id is required")
 	private Long recipe_id;
 	
-	@NotEmpty(message = "User id is required")
+	@NotNull(message = "User id is required")
 	private Long user_id;
 
 	public PlanRecipeCreateDto(Double portions, LocalDate planDate, MealType type, Long recipe_id, Long user_id) {

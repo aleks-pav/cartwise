@@ -2,7 +2,6 @@ package lt.cartwise.plan.services;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Valid;
 import lt.cartwise.exceptions.NotFoundException;
 import lt.cartwise.plan.dto.PlanRecipeCreateDto;
 import lt.cartwise.plan.dto.PlanRecipeDto;
@@ -31,7 +30,7 @@ public class PlanRecipeService {
 		this.planMapper = planMapper;
 	}
 
-	public PlanRecipeDto createPlanRecipe(@Valid PlanRecipeCreateDto dto) {
+	public PlanRecipeDto createPlanRecipe(PlanRecipeCreateDto dto) {
 		Recipe recipe = recipeRepository.findById( dto.getRecipe_id() ).orElseThrow( () -> new NotFoundException("Recipe not found"));
 		Plan plan = planService.getActiveByUser(dto.getUser_id()).orElseThrow( () -> new NotFoundException("Active plan for the user not found") );
 		PlanRecipe planRecipe = new PlanRecipe();

@@ -3,6 +3,7 @@ package lt.cartwise.plan.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import lt.cartwise.plan.dto.PlanRecipeCreateDto;
 import lt.cartwise.plan.dto.PlanRecipeDto;
 import lt.cartwise.plan.services.PlanRecipeService;
@@ -18,9 +19,9 @@ public class PlanRecipeController {
 		this.planRecipeService = planRecipeService;
 	}
 	
-	
+		
 	@PostMapping
-	public ResponseEntity<PlanRecipeDto> createPlanRecipe(@RequestBody PlanRecipeCreateDto dto){
+	public ResponseEntity<PlanRecipeDto> createPlanRecipe(@Valid @RequestBody PlanRecipeCreateDto dto){
 		return ResponseEntity.ok( planRecipeService.createPlanRecipe(dto) );
 	}
 }
