@@ -13,19 +13,23 @@ public class PlanWithAttributesDto {
 	
 	private List<PlanRecipeDto> recipes;
 //	private List<PlanProductDto> products;
+	
+	private String shoppingList;
 
 	public PlanWithAttributesDto(Long id
 			, String name
 			, Boolean isActive
 			, LocalDateTime createdAt
 			, LocalDateTime updatedAt
-			, List<PlanRecipeDto> recipes) {
+			, List<PlanRecipeDto> recipes
+			, String shoppingList) {
 		this.id = id;
 		this.name = name;
 		this.isActive = isActive;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.recipes = recipes;
+		this.shoppingList = shoppingList;
 	}
 
 	public Long getId() {
@@ -74,6 +78,14 @@ public class PlanWithAttributesDto {
 
 	public void setRecipes(List<PlanRecipeDto> recipes) {
 		this.recipes = recipes;
+	}
+
+	public String getShoppingList() {
+		return shoppingList;
+	}
+
+	public void setShoppingList(String shoppingList) {
+		this.shoppingList = shoppingList;
 	}
 	
 	

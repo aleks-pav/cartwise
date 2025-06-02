@@ -69,5 +69,12 @@ public class Plan extends Timestampable {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	public ShoppingList getShoppingList() {
+		return shoppingList;
+	}
+	public void setShoppingList(ShoppingList shoppingList) {
+		this.shoppingList = shoppingList;
+	}
+	
 	
 }

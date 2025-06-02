@@ -1,11 +1,14 @@
 package lt.cartwise.user.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class UserPatchDto {
 	
 	@NotNull(message = "User id field is required")
 	private Long id;
+	
+	@Size(min = 2, message = "Name must be at least 2 symbols long")
 	private String name;
 	
 	public UserPatchDto(Long id, String name) {

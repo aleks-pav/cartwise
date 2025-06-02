@@ -132,7 +132,8 @@ public class PlanService {
 				, entity.getIsActive()
 				, entity.getCreatedAt()
 				, entity.getUpdatedAt()
-				, entity.getRecipes().stream().map(planMapper::toPlanRecipeDto).toList() );
+				, entity.getRecipes().stream().map(planMapper::toPlanRecipeDto).toList()
+				, entity.getShoppingList().getId());
 	}
 	
 	private Plan toEntity(PlanCreateDto dto) {

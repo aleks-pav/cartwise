@@ -10,10 +10,8 @@ import jakarta.validation.Valid;
 import lt.cartwise.exceptions.NotFoundException;
 import lt.cartwise.plan.entities.Plan;
 import lt.cartwise.plan.services.PlanService;
-import lt.cartwise.product.mappers.ProductMapper;
 import lt.cartwise.shopping.dto.ShoppingListCreateDto;
 import lt.cartwise.shopping.dto.ShoppingListDto;
-import lt.cartwise.shopping.dto.ShoppingListProductDto;
 import lt.cartwise.shopping.entities.ShoppingList;
 import lt.cartwise.shopping.entities.ShoppingListProduct;
 import lt.cartwise.shopping.mappers.ShoppingListMapper;
@@ -40,6 +38,13 @@ public class ShoppingListService {
 	@Transactional
 	public String createShoppingList(@Valid ShoppingListCreateDto dto) {
 		Plan plan = planService.getPlan(dto.getPlanId(), new UserDto(dto.getUserId())).orElseThrow( () -> new NotFoundException("Plan by user not found") );
+		Optional<ShoppingList> oldShoppingList = shoppingListRepository.findByPlanId(dto.getPlanId());
+		oldShoppingList.ifPresent( (s) -> {
+			plan.setShoppingList(null);
+			shoppingListRepository.delete(s);
+			shoppingListRepository.flush();
+		} );
+		
 		ShoppingList shoppingList = new ShoppingList();
 		shoppingList.setPlan(plan);
 		
