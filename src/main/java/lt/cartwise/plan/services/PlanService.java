@@ -127,13 +127,15 @@ public class PlanService {
 	}
 	
 	private PlanWithAttributesDto toPlanWithAttributesDto(Plan entity) {
-		return new PlanWithAttributesDto(entity.getId()
+		PlanWithAttributesDto dto = new PlanWithAttributesDto(entity.getId()
 				, entity.getName()
 				, entity.getIsActive()
 				, entity.getCreatedAt()
 				, entity.getUpdatedAt()
-				, entity.getRecipes().stream().map(planMapper::toPlanRecipeDto).toList()
-				, entity.getShoppingList().getId());
+				, entity.getRecipes().stream().map(planMapper::toPlanRecipeDto).toList());
+		if( entity.getShoppingList() != null )
+			dto.setShoppingList(entity.getShoppingList().getId());
+		return dto;
 	}
 	
 	private Plan toEntity(PlanCreateDto dto) {

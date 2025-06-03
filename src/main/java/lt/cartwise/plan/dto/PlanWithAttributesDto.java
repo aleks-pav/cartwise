@@ -21,15 +21,13 @@ public class PlanWithAttributesDto {
 			, Boolean isActive
 			, LocalDateTime createdAt
 			, LocalDateTime updatedAt
-			, List<PlanRecipeDto> recipes
-			, String shoppingList) {
+			, List<PlanRecipeDto> recipes) {
 		this.id = id;
 		this.name = name;
 		this.isActive = isActive;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.recipes = recipes;
-		this.shoppingList = shoppingList;
 	}
 
 	public Long getId() {

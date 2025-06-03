@@ -19,7 +19,8 @@ public class ShoppingListMapper {
 	
 	
 	public ShoppingListDto toDto(ShoppingList entity) {
-		return new ShoppingListDto( entity.getProducts().stream().map( this::toShoppingListProductDto ).toList() );
+		return new ShoppingListDto( entity.getPlan().getName()
+				, entity.getProducts().stream().map( this::toShoppingListProductDto ).toList() );
 	}
 	
 	public ShoppingListProductDto toShoppingListProductDto(ShoppingListProduct entity) {
