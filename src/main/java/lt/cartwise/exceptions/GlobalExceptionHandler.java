@@ -32,6 +32,17 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(404).body(error);
 	}
 	
+	@ExceptionHandler(DuplicateEntryException.class)
+	public ResponseEntity<Map<String,Object>> duplicate(DuplicateEntryException ex) {
+		logger.debug("Vartotojas gavo DuplicateEntryException");
+
+		Map<String,Object> error = new LinkedHashMap<>();
+		error.put("error", ex.getMessage());
+		error.put("timestamp", LocalDateTime.now());
+		
+		return ResponseEntity.status(409).body(error);
+	}
+	
 	@ExceptionHandler(NoDefaultLanguageException.class)
 	public ResponseEntity<Map<String,Object>> notFound(NoDefaultLanguageException ex) {
 		logger.debug("Vartotojas nerastas");

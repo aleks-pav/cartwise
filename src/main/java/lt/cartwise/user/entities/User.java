@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lt.cartwise.Timestampable;
+import lt.cartwise.enums.Role;
 import lt.cartwise.plan.entities.Plan;
 import lt.cartwise.recipe.entities.Recipe;
 
@@ -20,6 +21,10 @@ public class User extends Timestampable {
 	private String email;
 	private String name;
 	private String password;
+	private boolean isActive;
+	
+	@Enumerated(EnumType.STRING)
+	private Role role;
 	
 	@Lob
 	@Column(columnDefinition = "LONGBLOB")
@@ -32,6 +37,21 @@ public class User extends Timestampable {
 	private List<Plan> plans;
 	
 	
+	public User() {};
+	
+	public User(Long id, String email, String name, String password, boolean isActive, Role role, byte[] avatar
+			, List<Recipe> recipes, List<Plan> plans) {
+		this.id = id;
+		this.email = email;
+		this.name = name;
+		this.password = password;
+		this.isActive = isActive;
+		this.role = role;
+		this.avatar = avatar;
+		this.recipes = recipes;
+		this.plans = plans;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -63,7 +83,7 @@ public class User extends Timestampable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public byte[] getAvatar() {
 		return avatar;
 	}
@@ -71,6 +91,40 @@ public class User extends Timestampable {
 	public void setAvatar(byte[] avatar) {
 		this.avatar = avatar;
 	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public List<Recipe> getRecipes() {
+		return recipes;
+	}
+
+	public void setRecipes(List<Recipe> recipes) {
+		this.recipes = recipes;
+	}
+
+	public List<Plan> getPlans() {
+		return plans;
+	}
+
+	public void setPlans(List<Plan> plans) {
+		this.plans = plans;
+	}
+
+	
 	
 	
 	

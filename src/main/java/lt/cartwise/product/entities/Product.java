@@ -32,6 +32,21 @@ public class Product extends Timestampable {
 	private List<Ingridient> ingridients;
 	
 	
+	
+	public Product() {};
+	
+	public Product(Long id, String name, Integer calories, Unit units, List<ProductCategory> categories,
+			List<Ingridient> ingridients) {
+		this.id = id;
+		this.name = name;
+		this.calories = calories;
+		this.units = units;
+		this.categories = categories;
+		this.ingridients = ingridients;
+	}
+	
+	
+	
 	public Long getId() {
 		return id;
 	}

@@ -12,7 +12,9 @@ public class ShoppingList extends Timestampable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
+	// TODO: must be UUID object
 	private String id;
+	
 	
 	@OneToOne
 	@JoinColumn(name = "plan_id", nullable = false)
