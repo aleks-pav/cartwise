@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import lt.cartwise.images.ImageEditor;
-import lt.cartwise.user.dto.UserCreateDto;
 import lt.cartwise.user.dto.UserDto;
 import lt.cartwise.user.dto.UserPatchDto;
 import lt.cartwise.user.services.UserService;
@@ -30,11 +29,6 @@ public class UserController {
 	@GetMapping("/me")
 	public ResponseEntity<UserDto> getUserById(@AuthenticationPrincipal UserDetails userDetails){
 		return ResponseEntity.of( userService.getUser(userDetails) );
-	}
-	
-	@PostMapping
-	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserCreateDto userCreate){
-		return ResponseEntity.ok(userService.createUser(userCreate));
 	}
 	
 	@PatchMapping

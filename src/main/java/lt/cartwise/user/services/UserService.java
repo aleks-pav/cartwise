@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lt.cartwise.exceptions.NotFoundException;
-import lt.cartwise.user.dto.UserCreateDto;
 import lt.cartwise.user.dto.UserDto;
 import lt.cartwise.user.dto.UserPatchDto;
 import lt.cartwise.user.entities.User;
@@ -38,11 +37,6 @@ public class UserService {
 		return userRepository.findByEmail(userDetails.getUsername()).map( userMapper::toDto );
 	}
 
-	public UserDto createUser(UserCreateDto userCreate) {
-		User user = userMapper.toEntity(userCreate);
-		return userMapper.toDto( userRepository.save(user) );
-	}
-	
 	public UserDto patchUser(UserPatchDto dto) {
 		User user = getUserById( dto.getId() ).orElseThrow( () -> new NotFoundException("User (id:"+ dto.getId() +") not  found"));
 		if(dto.getName() != null)
