@@ -3,6 +3,7 @@ package lt.cartwise.user.services;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,10 @@ public class UserService {
 	
 	public Optional<UserDto> getUserDtoById(Long id) {
 		return userRepository.findById(id).map( userMapper::toDto );
+	}
+	
+	public Optional<UserDto> getUser(UserDetails userDetails) {
+		return userRepository.findByEmail(userDetails.getUsername()).map( userMapper::toDto );
 	}
 
 	public UserDto createUser(UserCreateDto userCreate) {

@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +17,6 @@ import lt.cartwise.user.dto.UserPatchDto;
 import lt.cartwise.user.services.UserService;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/users")
 public class UserController {
 	
@@ -26,9 +27,9 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
-		return ResponseEntity.of( userService.getUserDtoById(id) );
+	@GetMapping("/me")
+	public ResponseEntity<UserDto> getUserById(@AuthenticationPrincipal UserDetails userDetails){
+		return ResponseEntity.of( userService.getUser(userDetails) );
 	}
 	
 	@PostMapping

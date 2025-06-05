@@ -10,6 +10,7 @@ import lt.cartwise.user.dto.SignupRequest;
 import lt.cartwise.user.services.AuthService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/auth")
 public class AuthController {
 	
