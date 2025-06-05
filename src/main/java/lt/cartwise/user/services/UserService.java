@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import lt.cartwise.exceptions.NotFoundException;
-import lt.cartwise.images.ImageEditor;
 import lt.cartwise.user.dto.UserCreateDto;
 import lt.cartwise.user.dto.UserDto;
 import lt.cartwise.user.dto.UserPatchDto;
