@@ -6,14 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lt.cartwise.enums.Unit;
 import lt.cartwise.exceptions.NotFoundException;
-import lt.cartwise.plan.dto.PlanCreateDto;
-import lt.cartwise.plan.dto.PlanDeleteDto;
 import lt.cartwise.plan.dto.PlanDto;
+import lt.cartwise.plan.dto.PlanPostRequest;
 import lt.cartwise.plan.dto.PlanWithAttributesDto;
 import lt.cartwise.plan.entities.Plan;
 import lt.cartwise.plan.entities.PlanRecipe;
@@ -21,33 +22,35 @@ import lt.cartwise.plan.mappers.PlanMapper;
 import lt.cartwise.plan.repositories.PlanRepository;
 import lt.cartwise.product.entities.Product;
 import lt.cartwise.recipe.entities.Ingridient;
-import lt.cartwise.user.dto.UserDto;
+import lt.cartwise.shopping.services.ShoppingListService;
 import lt.cartwise.user.entities.User;
 import lt.cartwise.user.services.UserService;
 
 @Service
 public class PlanService {
 	
-	// TODO "final" missing in whole application
-	private PlanRepository planRepository;
-	private PlanMapper planMapper;
-	private UserService userService;
+	private final PlanRepository planRepository;
+	private final PlanMapper planMapper;
+	private final UserService userService;
+	private final ShoppingListService shoppingListService;
 
-	public PlanService(PlanRepository planRepository, PlanMapper planMapper, UserService userService) {
+	public PlanService(PlanRepository planRepository
+			, PlanMapper planMapper
+			, UserService userService
+			, ShoppingListService shoppingListService) {
 		this.planRepository = planRepository;
 		this.planMapper = planMapper;
 		this.userService = userService;
+		this.shoppingListService = shoppingListService;
 	}
 
-	public List<PlanDto> getAllByUser(Long uid) {
-		return planRepository.findByUserIdOrderByCreatedAtDesc(uid).stream().map(this::toPlanDto).toList();
+	public List<PlanDto> getAllByUser(UserDetails userDetails) {
+		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
+		return planRepository.findByUserIdOrderByCreatedAtDesc(userId).stream().map(this::toPlanDto).toList();
 	}
 	
-	public Optional<Plan> getPlan(Long id, UserDto userDto) {
-		return planRepository.findByIdAndUserId(id, userDto.getId());
-	}
-
-	public Optional<PlanWithAttributesDto> getByIdByUser(Long id, Long userId) {
+	public Optional<PlanWithAttributesDto> getByIdByUser(UserDetails userDetails, Long id) {
+		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
 		Optional<Plan> optionalPlan = planRepository.findByIdAndUserId(id, userId);
 		if( optionalPlan.isEmpty() )
 			return Optional.empty();
@@ -55,22 +58,29 @@ public class PlanService {
 		return Optional.of( this.toPlanWithAttributesDto( optionalPlan.get() ));
 	}
 	
-	public PlanDto createPlan(PlanCreateDto planCreate) {
-		User user = userService.getUserById( planCreate.getUserId() ).orElseThrow( () -> new NotFoundException("User not found") );
+	public PlanDto createPlan(UserDetails userDetails, @Valid PlanPostRequest planCreate) {
+		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
 		Plan plan = this.toEntity(planCreate);
 		plan.setIsActive( true );
 		plan.setUser( user );
 		
-		deactivateAll( planCreate.getUserId() );
+		deactivateAll( user.getId() );
 		
 		return this.toPlanDto( planRepository.save(plan) );
 	}
 	
-	public void deletePlan(@Valid PlanDeleteDto planDelete) {
-		User user = userService.getUserById( planDelete.getUserId() ).orElseThrow( () -> new NotFoundException("User not found") );
-		Plan plan = planRepository.findByIdAndUserId(planDelete.getId(), user.getId()).orElseThrow( () -> new NotFoundException("Plan with user not found") );
+	public void deletePlan(UserDetails userDetails, Long planId) {
+		Plan plan = getPlanOptional(userDetails, planId).orElseThrow( () -> new NotFoundException("Plan with user not found") );
 		planRepository.delete(plan);
 	}
+	
+	@Transactional
+	public String createShoppingList(UserDetails userDetails, Long id) {
+		Plan plan = getPlanOptional(userDetails, id).orElseThrow( () -> new NotFoundException("Plan with user not found") );
+		return shoppingListService.createShoppingList(plan, calculateProducts(plan.getId()));
+	}
+	
+	
 	
 	public Optional<Plan> getActiveByUser(Long userId) {
 		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, userId).stream().findFirst();
@@ -82,7 +92,7 @@ public class PlanService {
 	
 	
 	
-	public Map<Product, Map<Unit, Double>> calculateProducts(Long planId) {
+	private Map<Product, Map<Unit, Double>> calculateProducts(Long planId) {
 		Plan plan = planRepository.findById(planId).orElseThrow( () -> new NotFoundException("Plan not found") );
 		List<PlanRecipe> recipes = plan.getRecipes();
 		
@@ -108,6 +118,11 @@ public class PlanService {
 							p2.forEach((unit, amount) -> p1.merge(unit, amount, Double::sum));
 							return p1;
 						}));
+	}
+	
+	private Optional<Plan> getPlanOptional(UserDetails userDetails, Long id){
+		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
+		return planRepository.findByIdAndUserId(id, user.getId());
 	}
 	
 	private void deactivateAll(Long userId) {
@@ -138,11 +153,13 @@ public class PlanService {
 		return dto;
 	}
 	
-	private Plan toEntity(PlanCreateDto dto) {
+	private Plan toEntity(PlanPostRequest dto) {
 		Plan plan = new Plan();
-		plan.setName( dto.getName() );
+		plan.setName( dto.name() );
 		return plan;
 	}
+
+	
 
 	
 	

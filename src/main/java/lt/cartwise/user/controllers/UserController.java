@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 import lt.cartwise.images.ImageEditor;
 import lt.cartwise.user.dto.UserDto;
-import lt.cartwise.user.dto.UserPatchDto;
+import lt.cartwise.user.dto.UserPatchRequest;
 import lt.cartwise.user.services.UserService;
 
 @RestController
@@ -32,21 +32,24 @@ public class UserController {
 	}
 	
 	@PatchMapping
-	public ResponseEntity<UserDto> patchUser(@Valid @RequestBody UserPatchDto dto){
-		return ResponseEntity.ok(userService.patchUser(dto));
+	public ResponseEntity<UserDto> patchUser(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody UserPatchRequest dto){
+		return ResponseEntity.ok(userService.patchUser(userDetails, dto));
 	}
 	
-	@GetMapping("/{id}/avatar")
-	public ResponseEntity<byte[]> getAvatar(@PathVariable Long id) throws IOException{
-		byte[] avatar = userService.getAvatar(id);
+	@PostMapping("/avatar")
+	public ResponseEntity<Void> saveAvatar(@AuthenticationPrincipal UserDetails userDetails, @RequestBody MultipartFile file) throws IOException{
+		userService.uploadAvatar(userDetails, file);
+		return ResponseEntity.ok().build();
+	}
+	
+	// TODO: is this endpoint redundant?
+	@GetMapping("/avatar")
+	public ResponseEntity<byte[]> getAvatar(@AuthenticationPrincipal UserDetails userDetails) throws IOException{
+		byte[] avatar = userService.getAvatar(userDetails);
 		String format = ImageEditor.detectImageFormat(avatar);
 	    MediaType mediaType = ImageEditor.getMediaTypeForFormat(format);
 		return ResponseEntity.ok().contentType( mediaType ).body(avatar);
 	}
 	
-	@PostMapping("/{id}/avatar")
-	public ResponseEntity<Void> saveAvatar(@PathVariable Long id, @RequestParam MultipartFile file) throws IOException{
-		userService.uploadAvatar(id, file);
-		return ResponseEntity.ok().build();
-	}
+	
 }

@@ -3,7 +3,6 @@ package lt.cartwise.shopping.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import lt.cartwise.shopping.dto.ShoppingListCreateDto;
 import lt.cartwise.shopping.dto.ShoppingListDto;
 import lt.cartwise.shopping.dto.ShoppingListProductDto;
 import lt.cartwise.shopping.services.ShoppingListProductService;
@@ -27,10 +26,6 @@ public class ShoppingListController {
 		return ResponseEntity.of(shoppingListService.getShoppingList(id));
 	}
 	
-	@PostMapping
-	public ResponseEntity<String> createShoppingList(@RequestBody ShoppingListCreateDto dto){
-		return ResponseEntity.ok( shoppingListService.createShoppingList(dto) );
-	}
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<ShoppingListProductDto> switchCompleted(@PathVariable String id, @RequestBody ShoppingListProductDto dto){

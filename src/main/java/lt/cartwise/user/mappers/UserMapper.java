@@ -18,7 +18,7 @@ public class UserMapper {
 	}
 	
 	public UserDto toDto(User entity) {
-		String avatarSrc = ( entity.getAvatar() != null ) ? "/api/users/" + entity.getId() + "/avatar" : null;
+		String avatarSrc = ( entity.getAvatar() != null ) ? "/avatars/" + entity.getId() : null;
 		return new UserDto(entity.getId()
 				, entity.getEmail()
 				, entity.getName()

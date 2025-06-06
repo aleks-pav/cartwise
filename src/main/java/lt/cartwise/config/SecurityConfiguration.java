@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/plans/**").hasAnyRole("USER", "ADMIN")
+//                .requestMatchers("/api/plans/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().permitAll()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
