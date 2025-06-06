@@ -1,11 +1,13 @@
 package lt.cartwise.plan.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import lt.cartwise.plan.dto.PlanRecipeCreateDto;
 import lt.cartwise.plan.dto.PlanRecipeDto;
+import lt.cartwise.plan.dto.PlanRecipePostRequest;
 import lt.cartwise.plan.services.PlanRecipeService;
 
 @RestController
@@ -21,7 +23,8 @@ public class PlanRecipeController {
 	
 		
 	@PostMapping
-	public ResponseEntity<PlanRecipeDto> createPlanRecipe(@Valid @RequestBody PlanRecipeCreateDto dto){
-		return ResponseEntity.ok( planRecipeService.createPlanRecipe(dto) );
+	public ResponseEntity<PlanRecipeDto> createPlanRecipe(@AuthenticationPrincipal UserDetails userDetails
+			, @Valid @RequestBody PlanRecipePostRequest dto){
+		return ResponseEntity.ok( planRecipeService.createPlanRecipe(userDetails, dto) );
 	}
 }

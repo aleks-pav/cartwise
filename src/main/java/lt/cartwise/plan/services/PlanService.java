@@ -82,12 +82,14 @@ public class PlanService {
 	
 	
 	
-	public Optional<Plan> getActiveByUser(Long userId) {
-		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, userId).stream().findFirst();
+	public Optional<Plan> getActiveByUser(UserDetails userDetails) {
+		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
+		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, user.getId()).stream().findFirst();
 	}
 	
-	public Optional<Long> getActivePlanIdByUser(Long userId) {
-		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, userId).stream().findFirst().map(p -> p.getId());
+	public Optional<Long> getActivePlanIdByUser(UserDetails userDetails) {
+		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
+		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, user.getId()).stream().findFirst().map(p -> p.getId());
 	}
 	
 	

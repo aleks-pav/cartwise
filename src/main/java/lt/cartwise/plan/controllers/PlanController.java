@@ -30,8 +30,8 @@ public class PlanController {
 	}
 	
 	@GetMapping("/active")
-	public ResponseEntity<Long> getActive(@RequestParam Long uid){
-		return ResponseEntity.of( planService.getActivePlanIdByUser(uid) );
+	public ResponseEntity<Long> getActive(@AuthenticationPrincipal UserDetails userDetails){
+		return ResponseEntity.of( planService.getActivePlanIdByUser(userDetails) );
 	}
 	
 	// TODO get with full data (recipes and products)

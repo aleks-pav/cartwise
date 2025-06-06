@@ -92,7 +92,9 @@ public class RecipeService {
 		return toRecipeWithAttributesDto( recipeNew );
 	}
 	
-	
+	public Optional<Recipe> getRecipeOptional(Long id){
+		return recipeRepository.findById(id);
+	}
 	
 	
 	

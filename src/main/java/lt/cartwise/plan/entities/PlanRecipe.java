@@ -30,6 +30,16 @@ public class PlanRecipe {
 
 	
 	
+	public PlanRecipe() {};
+	
+	public PlanRecipe(Long id, Double portions, LocalDate planDate, MealType type, Plan plan, Recipe recipe) {
+		this.id = id;
+		this.portions = portions;
+		this.planDate = planDate;
+		this.type = type;
+		this.plan = plan;
+		this.recipe = recipe;
+	}
 	
 	public Long getId() {
 		return id;
