@@ -13,8 +13,8 @@ import lt.cartwise.product.dto.ProductIngridientDto;
 import lt.cartwise.product.entities.Product;
 import lt.cartwise.product.repositories.ProductRepository;
 import lt.cartwise.recipe.dto.RecipeCategoriesDto;
-import lt.cartwise.recipe.dto.RecipeCreateDto;
 import lt.cartwise.recipe.dto.RecipeIngridientDto;
+import lt.cartwise.recipe.dto.RecipePostRequest;
 import lt.cartwise.recipe.dto.RecipeWithAttributesDto;
 import lt.cartwise.recipe.entities.Ingridient;
 import lt.cartwise.recipe.entities.Recipe;
@@ -70,24 +70,21 @@ public class RecipeService {
 	}
 	
 	@Transactional
-	public RecipeWithAttributesDto createRecipe(@Valid RecipeCreateDto recipeCreate, User user)  {
+	public RecipeWithAttributesDto createRecipe(@Valid RecipePostRequest recipeCreate, User user)  {
 		Recipe recipe = recipeMapper.toEntity(recipeCreate);
 		recipe.setUser(user);
-		recipe.setCategories( recipeCategoryRepository.findAllById( recipeCreate.getCategories().stream().map(cat -> cat.getId()).toList() ) );
+		recipe.setCategories( recipeCategoryRepository.findAllById(recipeCreate.categories()) );
 		
-		List<Ingridient> ingridients = recipeCreate.getIngidients().stream().map( ingridientDto -> {
-			Long productId = ingridientDto.getProduct().getId();
+		List<Ingridient> ingridients = recipeCreate.ingridients().stream().map( ingridientDto -> {
+			Long productId = ingridientDto.productId();
 			Product product = productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product (id: " + productId + ") not found"));
-			Ingridient ingridient = this.toIngridientEntity(ingridientDto);
-			ingridient.setProduct( product );
-			ingridient.setRecipe( recipe );
-			return ingridient;
+			return new Ingridient(null, ingridientDto.amount(), ingridientDto.units(), recipe, product);
 		}).toList();
 		
 		recipe.setIngidients(ingridients);
 		
 		Recipe recipeNew = recipeRepository.save( recipe );
-		translationService.createTraslations(Model.RECIPE, recipeNew.getId(), recipeCreate.getTranslations() );
+		translationService.createTraslations(Model.RECIPE, recipeNew.getId(), recipeCreate.translations() );
 		
 		return toRecipeWithAttributesDto( recipeNew );
 	}
@@ -98,17 +95,6 @@ public class RecipeService {
 	
 	
 	
-	
-	
-	
-	private Ingridient toIngridientEntity(RecipeIngridientDto dto) {
-		Ingridient entity = new Ingridient();
-//		TO DO handle Product
-//		entity.setProduct( this.toProductEntity(dto.getProduct()) );
-		entity.setUnits( dto.getUnits() );
-		entity.setAmount( dto.getAmount() );
-		return entity;
-	}
 	
 	private RecipeWithAttributesDto toRecipeWithAttributesDto(Recipe recipe) {
 		return new RecipeWithAttributesDto(recipe.getId()

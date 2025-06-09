@@ -10,6 +10,7 @@ public class RecipeIngridientDto {
 	private ProductIngridientDto product;
 	
 	
+	public RecipeIngridientDto() {};
 	public RecipeIngridientDto(Double amount, Unit units, ProductIngridientDto product) {
 		this.amount = amount;
 		this.units = units;

@@ -11,6 +11,7 @@ public class ProductIngridientDto {
 	private Integer calories;
 	private List<TranslationByLanguageDto> translations;
 	
+	public ProductIngridientDto() {};
 	public ProductIngridientDto(Long id, String name, Integer calories, List<TranslationByLanguageDto> translations) {
 		this.id = id;
 		this.name = name;

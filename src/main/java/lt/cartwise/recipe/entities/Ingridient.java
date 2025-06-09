@@ -25,7 +25,15 @@ public class Ingridient {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
-	
+	public Ingridient() {};
+	public Ingridient(Long id, Double amount, Unit units, Recipe recipe, Product product) {
+		this.id = id;
+		this.amount = amount;
+		this.units = units;
+		this.recipe = recipe;
+		this.product = product;
+	}
+
 	
 	public Long getId() {
 		return id;

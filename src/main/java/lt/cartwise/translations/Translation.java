@@ -35,7 +35,15 @@ public class Translation {
 	
 	
 	
-	
+	public Translation() {};
+	public Translation(Long id, Long translatableId, Model translatableType, String language, String fieldName, String value) {
+		this.id = id;
+		this.translatableId = translatableId;
+		this.translatableType = translatableType;
+		this.language = language;
+		this.fieldName = fieldName;
+		this.value = value;
+	}
 	public Long getId() {
 		return id;
 	}
