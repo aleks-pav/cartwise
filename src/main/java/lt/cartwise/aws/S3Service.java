@@ -18,16 +18,18 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 @Service
 public class S3Service {
 
-	private String region;
 	private final S3Client s3;
-	private final String bucketName = "cartwise-gallery";
-//    private final String cloudFrontBaseUrl = "https://your-cloudfront-url/";
+	private String bucketName;
+    private String cloudFrontBaseUrl;
     
 	public S3Service(@Value("${aws.accessKeyId:FAKE_ACCESS_KEY}") String accessKey
 			, @Value("${aws.secretAccessKey:FAKE_SECRET_KEY}") String secretKey
-			, @Value("${aws.region:us-east-1}") String region) {
+			, @Value("${aws.region:us-east-1}") String region
+			, @Value("${aws.bucketName:files}") String bucketName
+			, @Value("${aws.cloudfrontBaseUrl:https://fallback-url/}") String cloudFrontBaseUrl) {
 		
-		this.region = region;
+		this.bucketName = bucketName;
+		this.cloudFrontBaseUrl = cloudFrontBaseUrl;
 		
 		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 		
@@ -50,7 +52,6 @@ public class S3Service {
 
             s3.putObject(putRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            // TODO: replace when using CloudFront
             return getFileUrl(key);
 
         } catch (IOException | S3Exception e) {
@@ -65,10 +66,6 @@ public class S3Service {
     }
 
     private String getFileUrl(String key) {
-        // S3 direct URL:
-         return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + key;
-
-        // If using CloudFront:
-//        return cloudFrontBaseUrl + key;
+    	return cloudFrontBaseUrl + "/" + key;
     }
 }

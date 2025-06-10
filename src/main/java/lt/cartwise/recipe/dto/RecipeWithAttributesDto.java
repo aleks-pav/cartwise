@@ -2,7 +2,9 @@ package lt.cartwise.recipe.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import lt.cartwise.images.ImageResponse;
 import lt.cartwise.translations.TranslationByLanguageDto;
 
 public class RecipeWithAttributesDto {
@@ -16,14 +18,14 @@ public class RecipeWithAttributesDto {
 	private List<TranslationByLanguageDto> translations;
 	private List<RecipeCategoriesDto> categories;
 	private List<RecipeIngridientDto> ingidients;
+	private Map<String,List<ImageResponse>> galleries;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	
 
-
-
-	public RecipeWithAttributesDto(Long id, String name, Integer portions, Integer timePreparation, Integer timeCooking, Boolean isPublic, List<TranslationByLanguageDto> translations,
-			List<RecipeIngridientDto> ingidients, List<RecipeCategoriesDto> categories, LocalDateTime createdAt, LocalDateTime updatedAt) {
+	public RecipeWithAttributesDto(Long id, String name, Integer portions, Integer timePreparation, Integer timeCooking,
+			Boolean isPublic, List<TranslationByLanguageDto> translations, List<RecipeCategoriesDto> categories,
+			List<RecipeIngridientDto> ingidients, Map<String, List<ImageResponse>> galleries, LocalDateTime createdAt,
+			LocalDateTime updatedAt) {
 		this.id = id;
 		this.name = name;
 		this.portions = portions;
@@ -31,11 +33,13 @@ public class RecipeWithAttributesDto {
 		this.timeCooking = timeCooking;
 		this.isPublic = isPublic;
 		this.translations = translations;
-		this.ingidients = ingidients;
 		this.categories = categories;
+		this.ingidients = ingidients;
+		this.galleries = galleries;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
+	
 	
 	
 	public Long getId() {
@@ -91,6 +95,12 @@ public class RecipeWithAttributesDto {
 	}
 	public void setIngidients(List<RecipeIngridientDto> ingidients) {
 		this.ingidients = ingidients;
+	}
+	public Map<String, List<ImageResponse>> getGalleries() {
+		return galleries;
+	}
+	public void setGalleries(Map<String, List<ImageResponse>> galleries) {
+		this.galleries = galleries;
 	}
 	public LocalDateTime getCreatedAt() {
 		return createdAt;

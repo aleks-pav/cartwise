@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.validation.Valid;
 import lt.cartwise.recipe.dto.RecipePostRequest;
 import lt.cartwise.recipe.dto.RecipeWithAttributesDto;
 import lt.cartwise.user.services.UserRecipeService;
@@ -38,19 +37,16 @@ public class UserRecipeController {
 		return ResponseEntity.of( userRecipeService.getIsPublicById(false, userDetails, id) );
 	}
 	
-//	@PostMapping
-//	public ResponseEntity<Void> createRecipe(@AuthenticationPrincipal UserDetails userDetails, @Valid @ModelAttribute RecipePostRequest recipeCreate){
-//		userRecipeService.createRecipe(userDetails, recipeCreate);
-//		return ResponseEntity.ok().build();
-//	}
-	
+	// TODO:@Valid
 	@PostMapping
-	public ResponseEntity<RecipeWithAttributesDto> createRecipe(@AuthenticationPrincipal UserDetails userDetails
+	public ResponseEntity<Void> createRecipe(@AuthenticationPrincipal UserDetails userDetails
 			, @RequestPart("data") String jsonString
 			, @RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonMappingException, JsonProcessingException{
 		
 		RecipePostRequest recipeCreate = new ObjectMapper().readValue(jsonString, RecipePostRequest.class);
 		
-		return ResponseEntity.ok(userRecipeService.createRecipe(userDetails, recipeCreate, files));
+		userRecipeService.createRecipe(userDetails, recipeCreate, files);
+		
+		return ResponseEntity.accepted().build();
 	}
 }

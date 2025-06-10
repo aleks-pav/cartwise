@@ -18,9 +18,16 @@ public class Image extends Timestampable {
 	@ManyToOne
 	@JoinColumn(name = "gallery_id")
 	private ImageGallery gallery;
+	
+	public Image() {};
+	public Image(Long id, String src, Integer position, Boolean isActive, ImageGallery gallery) {
+		this.id = id;
+		this.src = src;
+		this.position = position;
+		this.isActive = isActive;
+		this.gallery = gallery;
+	}
 
-	
-	
 	
 	
 	public Long getId() {

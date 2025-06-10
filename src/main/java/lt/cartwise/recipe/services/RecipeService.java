@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lt.cartwise.enums.Model;
 import lt.cartwise.exceptions.NotFoundException;
+import lt.cartwise.images.ImageGalleryService;
 import lt.cartwise.product.dto.ProductIngridientDto;
 import lt.cartwise.product.entities.Product;
 import lt.cartwise.product.repositories.ProductRepository;
@@ -33,17 +34,22 @@ public class RecipeService {
 	private final ProductRepository productRepository;
 	private final RecipeMapper recipeMapper;
 	private final TranslationService translationService;
+	private final ImageGalleryService imageGalleryService;
+
+
 
 	public RecipeService(RecipeRepository recipeRepository
 			, RecipeCategoryRepository recipeCategoryRepository
 			, ProductRepository productRepository
 			, RecipeMapper recipeMapper
-			, TranslationService translationService) {
+			, TranslationService translationService
+			, ImageGalleryService imageGalleryService) {
 		this.recipeRepository = recipeRepository;
 		this.recipeCategoryRepository = recipeCategoryRepository;
 		this.productRepository = productRepository;
 		this.recipeMapper = recipeMapper;
 		this.translationService = translationService;
+		this.imageGalleryService = imageGalleryService;
 	}
 
 	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic) {
@@ -70,7 +76,7 @@ public class RecipeService {
 	}
 	
 	@Transactional
-	public RecipeWithAttributesDto createRecipe(@Valid RecipePostRequest recipeCreate, User user)  {
+	public Recipe createRecipe(@Valid RecipePostRequest recipeCreate, User user)  {
 		Recipe recipe = recipeMapper.toEntity(recipeCreate);
 		recipe.setUser(user);
 		recipe.setCategories( recipeCategoryRepository.findAllById(recipeCreate.categories()) );
@@ -86,7 +92,7 @@ public class RecipeService {
 		Recipe recipeNew = recipeRepository.save( recipe );
 		translationService.createTraslations(Model.RECIPE, recipeNew.getId(), recipeCreate.translations() );
 		
-		return toRecipeWithAttributesDto( recipeNew );
+		return recipeNew;
 	}
 	
 	public Optional<Recipe> getRecipeOptional(Long id){
@@ -104,8 +110,9 @@ public class RecipeService {
 					, recipe.getTimeCooking()
 					, recipe.getIsPublic()
 					, translationService.getGroupedTranslations( Model.RECIPE, recipe.getId() )
-					, recipe.getIngidients().stream().map( this::toRecipeIngridientsDto ).toList()
 					, recipe.getCategories().stream().map( this::toRecipeCategoriesDto ).toList()
+					, recipe.getIngidients().stream().map( this::toRecipeIngridientsDto ).toList()
+					, imageGalleryService.getActiveByType( Model.RECIPE, recipe.getId() )
 					, recipe.getCreatedAt()
 					, recipe.getUpdatedAt()
 				);

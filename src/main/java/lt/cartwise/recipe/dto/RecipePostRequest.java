@@ -29,10 +29,7 @@ public record RecipePostRequest (
 		@NotNull
 		Boolean isPublic,
 		
-//		private List<TranslationByLanguageDto> translations;
-		
 		@NotEmpty(message = "Categories can't be empty")
-//		List<RecipeCategoryDto> categories,
 		List<Long> categories,
 		
 		@NotEmpty(message = "Ingridients can't be empty")
