@@ -35,6 +35,10 @@ public class UserRecipeService {
 		this.s3Service = s3Service;
 	}
 
+	public List<RecipeWithAttributesDto> getAllByUserDetails(UserDetails userDetails) {
+		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
+		return recipeService.getAllByUser(userId);
+	}
 	
 	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic, UserDetails userDetails) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
@@ -57,6 +61,9 @@ public class UserRecipeService {
 			imageGalleryService.createGallery(Model.RECIPE, recipe.getId(), uploadedUrls);
 	    }
 	}
+
+
+	
 
 
 	

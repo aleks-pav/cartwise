@@ -6,12 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import lt.cartwise.plan.dto.PlanRecipeDto;
-import lt.cartwise.plan.dto.PlanRecipePostRequest;
+import lt.cartwise.plan.dto.PlanRecipePostRequestList;
 import lt.cartwise.plan.services.PlanRecipeService;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/plans/recipes")
 public class PlanRecipeController {
 	
@@ -21,10 +19,10 @@ public class PlanRecipeController {
 		this.planRecipeService = planRecipeService;
 	}
 	
-		
 	@PostMapping
-	public ResponseEntity<PlanRecipeDto> createPlanRecipe(@AuthenticationPrincipal UserDetails userDetails
-			, @Valid @RequestBody PlanRecipePostRequest dto){
-		return ResponseEntity.ok( planRecipeService.createPlanRecipe(userDetails, dto) );
+	public ResponseEntity<Void> createPlanRecipe(@AuthenticationPrincipal UserDetails userDetails
+			, @RequestBody @Valid PlanRecipePostRequestList requestList){
+		planRecipeService.createPlanRecipe(userDetails, requestList.recipes());
+		return ResponseEntity.accepted().build();
 	}
 }

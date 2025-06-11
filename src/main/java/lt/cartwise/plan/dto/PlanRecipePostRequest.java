@@ -4,10 +4,11 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lt.cartwise.enums.MealType;
 
 public record PlanRecipePostRequest(
-		@NotNull(message = "Portions amount required")
+		@Positive(message = "Portions must be positive number")
 		Double portions,
 		
 		@FutureOrPresent(message = "Plan date must be today or in the future")

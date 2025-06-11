@@ -51,7 +51,11 @@ public class RecipeService {
 		this.translationService = translationService;
 		this.imageGalleryService = imageGalleryService;
 	}
-
+	
+	public List<RecipeWithAttributesDto> getAllByUser(Long userId) {
+		return recipeRepository.findByUserId(userId).stream().map( this::toRecipeWithAttributesDto ).toList();
+	}
+	
 	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic) {
 		return recipeRepository.findByIsPublic(isPublic).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}

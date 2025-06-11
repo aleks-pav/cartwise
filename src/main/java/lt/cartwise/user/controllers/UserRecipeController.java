@@ -29,7 +29,7 @@ public class UserRecipeController {
 	
 	@GetMapping
 	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPrivate(@AuthenticationPrincipal UserDetails userDetails){
-		return ResponseEntity.ok( userRecipeService.getAllIsPublic(false, userDetails) );
+		return ResponseEntity.ok( userRecipeService.getAllByUserDetails(userDetails) );
 	}
 	
 	@GetMapping("{id}")
