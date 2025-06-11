@@ -37,7 +37,7 @@ public class UserService {
 	public Optional<UserDto> getUser(UserDetails userDetails) {
 		return getUserOptional(userDetails).map( userMapper::toDto );
 	}
-
+	
 	public UserDto patchUser(UserDetails userDetails, @Valid UserPatchRequest dto) {
 		User user = getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not  found"));
 		if(dto.name() != null)
@@ -67,6 +67,8 @@ public class UserService {
 	public Optional<User> getUserOptional(UserDetails userDetails){
 		return userRepository.findByEmail(userDetails.getUsername());
 	}
+
+	
 
 	
 	

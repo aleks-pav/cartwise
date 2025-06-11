@@ -46,7 +46,7 @@ public class PlanService {
 
 	public List<PlanDto> getAllByUser(UserDetails userDetails) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return planRepository.findByUserIdOrderByCreatedAtDesc(userId).stream().map(this::toPlanDto).toList();
+		return planRepository.findByUserIdOrderByCreatedAtDesc(userId).stream().map(planMapper::toPlanDto).toList();
 	}
 	
 	public Optional<PlanWithAttributesDto> getByIdByUser(UserDetails userDetails, Long id) {
@@ -55,18 +55,18 @@ public class PlanService {
 		if( optionalPlan.isEmpty() )
 			return Optional.empty();
 		
-		return Optional.of( this.toPlanWithAttributesDto( optionalPlan.get() ));
+		return Optional.of( planMapper.toPlanWithAttributesDto( optionalPlan.get() ));
 	}
 	
 	public PlanDto createPlan(UserDetails userDetails, @Valid PlanPostRequest planCreate) {
 		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
-		Plan plan = this.toEntity(planCreate);
+		Plan plan = planMapper.toEntity(planCreate);
 		plan.setIsActive( true );
 		plan.setUser( user );
 		
 		deactivateAll( user.getId() );
 		
-		return this.toPlanDto( planRepository.save(plan) );
+		return planMapper.toPlanDto( planRepository.save(plan) );
 	}
 	
 	public void deletePlan(UserDetails userDetails, Long planId) {
@@ -80,18 +80,10 @@ public class PlanService {
 		return shoppingListService.createShoppingList(plan, calculateProducts(plan.getId()));
 	}
 	
-	
-	
 	public Optional<Plan> getActiveByUser(UserDetails userDetails) {
 		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
 		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, user.getId()).stream().findFirst();
 	}
-	
-	public Optional<Long> getActivePlanIdByUser(UserDetails userDetails) {
-		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
-		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, user.getId()).stream().findFirst().map(p -> p.getId());
-	}
-	
 	
 	
 	private Map<Product, Map<Unit, Double>> calculateProducts(Long planId) {
@@ -135,31 +127,7 @@ public class PlanService {
 		planRepository.saveAll(plans);
 	}
 	
-	private PlanDto toPlanDto(Plan entity) {
-		return new PlanDto(entity.getId()
-				, entity.getName()
-				, entity.getIsActive()
-				, entity.getCreatedAt()
-				, entity.getUpdatedAt());
-	}
 	
-	private PlanWithAttributesDto toPlanWithAttributesDto(Plan entity) {
-		PlanWithAttributesDto dto = new PlanWithAttributesDto(entity.getId()
-				, entity.getName()
-				, entity.getIsActive()
-				, entity.getCreatedAt()
-				, entity.getUpdatedAt()
-				, entity.getRecipes().stream().map(planMapper::toPlanRecipeDto).toList());
-		if( entity.getShoppingList() != null )
-			dto.setShoppingList(entity.getShoppingList().getId());
-		return dto;
-	}
-	
-	private Plan toEntity(PlanPostRequest dto) {
-		Plan plan = new Plan();
-		plan.setName( dto.name() );
-		return plan;
-	}
 
 	
 
