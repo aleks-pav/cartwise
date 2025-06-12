@@ -114,7 +114,7 @@ public class PlanService {
 						}));
 	}
 	
-	private Optional<Plan> getPlanOptional(UserDetails userDetails, Long id){
+	public Optional<Plan> getPlanOptional(UserDetails userDetails, Long id){
 		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
 		return planRepository.findByIdAndUserId(id, user.getId());
 	}
