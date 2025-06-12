@@ -32,6 +32,17 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(404).body(error);
 	}
 	
+	@ExceptionHandler(InvalidRefreshTokenException.class)
+	public ResponseEntity<Map<String,Object>> notFound(InvalidRefreshTokenException ex) {
+		logger.debug("Vartotojas gavo InvalidRefreshTokenException");
+
+		Map<String,Object> error = new LinkedHashMap<>();
+		error.put("error", ex.getMessage());
+		error.put("timestamp", LocalDateTime.now());
+		
+		return ResponseEntity.status(401).body(error);
+	}
+	
 	@ExceptionHandler(DuplicateEntryException.class)
 	public ResponseEntity<Map<String,Object>> duplicate(DuplicateEntryException ex) {
 		logger.debug("Vartotojas gavo DuplicateEntryException");

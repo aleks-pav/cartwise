@@ -1,4 +1,7 @@
-package lt.cartwise.user.services;
+package lt.cartwise.auth;
+
+import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,11 +13,8 @@ import jakarta.validation.Valid;
 import lt.cartwise.enums.Role;
 import lt.cartwise.exceptions.DuplicateEntryException;
 import lt.cartwise.exceptions.NotFoundException;
+import lt.cartwise.exceptions.InvalidRefreshTokenException;
 import lt.cartwise.security.JwtUtils;
-import lt.cartwise.user.dto.LoginRequest;
-import lt.cartwise.user.dto.LoginResponse;
-import lt.cartwise.user.dto.SignupRequest;
-import lt.cartwise.user.dto.UserDto;
 import lt.cartwise.user.entities.User;
 import lt.cartwise.user.mappers.UserMapper;
 import lt.cartwise.user.repositories.UserRepository;
@@ -22,23 +22,28 @@ import lt.cartwise.user.repositories.UserRepository;
 @Service
 public class AuthService {
 
+	private final RefreshTokenRepository refreshTokenRepository;
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtils jwtUtils;
 
-
-
-	public AuthService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder,
-			AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+	public AuthService(UserRepository userRepository
+			, UserMapper userMapper
+			, RefreshTokenRepository refreshTokenRepository
+			, PasswordEncoder passwordEncoder
+			, AuthenticationManager authenticationManager
+			, JwtUtils jwtUtils) {
 		this.userRepository = userRepository;
 		this.userMapper = userMapper;
+		this.refreshTokenRepository = refreshTokenRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManager = authenticationManager;
 		this.jwtUtils = jwtUtils;
 	}
 
+	
 	public void signUp(@Valid SignupRequest request) {
 		if( userRepository.findByEmail( request.email() ).isPresent() )
 			throw new DuplicateEntryException("User with email " + request.email() + " already exists");
@@ -50,15 +55,47 @@ public class AuthService {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 		
-		UserDto user = userRepository
+		User user = userRepository
 				.findByEmail(authentication.getName())
-				.map(userMapper::toDto)
 				.orElseThrow(() -> new NotFoundException("User not  found"));
 		
-		return new LoginResponse( jwtUtils.generateToken(authentication.getName()), user ); 
+		return new LoginResponse(jwtUtils.generateToken(authentication.getName())
+				, createRefreshToken(user)
+				, userMapper.toDto(user) );
 	}
+	
+	public LoginResponse refreshToken(String refreshToken) {
+		RefreshToken tokenEntity = verifyToken(refreshToken);
+		User user = tokenEntity.getUser();
+		return new LoginResponse(jwtUtils.generateToken(user.getEmail())
+				, createRefreshToken(user)
+				, userMapper.toDto(user) );
+	}
+	
+	public String createRefreshToken(User user) {
+		Instant now = Instant.now();
+	    String token = UUID.randomUUID().toString();
+	    RefreshToken refreshToken = new RefreshToken();
+	    refreshToken.setToken(token);
+	    refreshToken.setUser(user);
+	    refreshToken.setExpiryDate(now.plusMillis(7 * 24 * 60 * 60 * 1000)); // 7-days
 
+	    refreshTokenRepository.save(refreshToken);
+	    return token;
+	}
 	
 	
 	
+	
+	private RefreshToken verifyToken(String token) {
+	    RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+	        .orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token"));
+
+	    if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
+	        refreshTokenRepository.delete(refreshToken);
+	        throw new InvalidRefreshTokenException("Refresh token expired");
+	    }
+
+	    return refreshToken;
+	}	
 }

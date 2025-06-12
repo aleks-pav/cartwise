@@ -27,7 +27,7 @@ public class JwtUtils {
 		Instant now = Instant.now();
 		return Jwts.builder()
 				.subject(email)
-				.issuedAt( Date.from(now) )
+				.issuedAt(Date.from(now))
 				.expiration(Date.from(now.plusMillis(expirationMillis)))
 				.signWith(secretKey)
 				.compact();

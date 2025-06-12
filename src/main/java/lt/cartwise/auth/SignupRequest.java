@@ -1,4 +1,4 @@
-package lt.cartwise.user.dto;
+package lt.cartwise.auth;
 
 import jakarta.validation.constraints.*;
 

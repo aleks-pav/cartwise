@@ -1,13 +1,9 @@
-package lt.cartwise.user.controllers;
+package lt.cartwise.auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import lt.cartwise.user.dto.LoginRequest;
-import lt.cartwise.user.dto.LoginResponse;
-import lt.cartwise.user.dto.SignupRequest;
-import lt.cartwise.user.services.AuthService;
 
 @RestController
 @CrossOrigin
@@ -32,4 +28,10 @@ public class AuthController {
 	public ResponseEntity<LoginResponse> signUp(@Valid @RequestBody LoginRequest request){
 		return ResponseEntity.ok( authService.login(request) );
 	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+	    return ResponseEntity.ok( authService.refreshToken(request.token()) );
+	}
+
 }
