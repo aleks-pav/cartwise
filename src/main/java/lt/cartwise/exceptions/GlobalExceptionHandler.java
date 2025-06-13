@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(InvalidRefreshTokenException.class)
 	public ResponseEntity<Map<String,Object>> notFound(InvalidRefreshTokenException ex) {
-		logger.debug("Vartotojas gavo InvalidRefreshTokenException");
+		logger.debug("Vartotojas gavo InvalidRefreshTokenException: " + ex.getMessage());
 
 		Map<String,Object> error = new LinkedHashMap<>();
 		error.put("error", ex.getMessage());

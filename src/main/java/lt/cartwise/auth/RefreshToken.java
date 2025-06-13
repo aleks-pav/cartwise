@@ -24,7 +24,15 @@ public class RefreshToken {
     private Instant expiryDate;
     
     
-
+    
+    public RefreshToken() {};
+	public RefreshToken(Long id, String token, User user, Instant expiryDate) {
+		this.id = id;
+		this.token = token;
+		this.user = user;
+		this.expiryDate = expiryDate;
+	}
+	
 	public Long getId() {
 		return id;
 	}

@@ -28,7 +28,7 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtils jwtUtils;
-
+	
 	public AuthService(UserRepository userRepository
 			, UserMapper userMapper
 			, RefreshTokenRepository refreshTokenRepository
@@ -68,29 +68,26 @@ public class AuthService {
 		RefreshToken tokenEntity = verifyToken(refreshToken);
 		User user = tokenEntity.getUser();
 		return new LoginResponse(jwtUtils.generateToken(user.getEmail())
-				, createRefreshToken(user)
+				, null
 				, userMapper.toDto(user) );
 	}
 	
-	public String createRefreshToken(User user) {
+	
+	
+	
+	
+	private String createRefreshToken(User user) {
 		Instant now = Instant.now();
 	    String token = UUID.randomUUID().toString();
-	    RefreshToken refreshToken = new RefreshToken();
-	    refreshToken.setToken(token);
-	    refreshToken.setUser(user);
-	    refreshToken.setExpiryDate(now.plusMillis(7 * 24 * 60 * 60 * 1000)); // 7-days
+	    RefreshToken refreshToken = new RefreshToken(null, token, user, now.plusMillis(7 * 24 * 60 * 60 * 1000)); // 7-days
 
 	    refreshTokenRepository.save(refreshToken);
 	    return token;
 	}
 	
-	
-	
-	
 	private RefreshToken verifyToken(String token) {
 	    RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
 	        .orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token"));
-
 	    if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
 	        refreshTokenRepository.delete(refreshToken);
 	        throw new InvalidRefreshTokenException("Refresh token expired");
