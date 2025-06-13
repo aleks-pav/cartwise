@@ -12,7 +12,6 @@ public class ShoppingList extends Timestampable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	// TODO: must be UUID object
 	private String id;
 	
 	

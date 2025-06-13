@@ -51,7 +51,7 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	public LoginResponse login(@Valid LoginRequest request) {
+	public AuthDto login(@Valid LoginRequest request) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 		
@@ -59,40 +59,40 @@ public class AuthService {
 				.findByEmail(authentication.getName())
 				.orElseThrow(() -> new NotFoundException("User not  found"));
 		
-		return new LoginResponse(jwtUtils.generateToken(authentication.getName())
-				, createRefreshToken(user)
+		return new AuthDto(jwtUtils.generateToken(authentication.getName())
+				, createRefreshToken(user).getToken()
 				, userMapper.toDto(user) );
 	}
 	
-	public LoginResponse refreshToken(String refreshToken) {
-		RefreshToken tokenEntity = verifyToken(refreshToken);
-		User user = tokenEntity.getUser();
-		return new LoginResponse(jwtUtils.generateToken(user.getEmail())
-				, null
+	public AuthDto refreshToken(String oldToken) {
+		RefreshToken newToken = rotateToken(oldToken);
+		User user = newToken.getUser();
+		
+		return new AuthDto(jwtUtils.generateToken(user.getEmail())
+				, newToken.getToken()
 				, userMapper.toDto(user) );
 	}
 	
 	
 	
-	
-	
-	private String createRefreshToken(User user) {
+	private RefreshToken createRefreshToken(User user) {
 		Instant now = Instant.now();
 	    String token = UUID.randomUUID().toString();
 	    RefreshToken refreshToken = new RefreshToken(null, token, user, now.plusMillis(7 * 24 * 60 * 60 * 1000)); // 7-days
 
-	    refreshTokenRepository.save(refreshToken);
-	    return token;
+	    return refreshTokenRepository.save(refreshToken);
 	}
 	
-	private RefreshToken verifyToken(String token) {
+	private RefreshToken rotateToken(String token) {
 	    RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
 	        .orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token"));
+	    
 	    if (refreshToken.getExpiryDate().isBefore(Instant.now())) {
-	        refreshTokenRepository.delete(refreshToken);
 	        throw new InvalidRefreshTokenException("Refresh token expired");
 	    }
+	    User user = refreshToken.getUser();
+	    refreshTokenRepository.delete(refreshToken);
 
-	    return refreshToken;
+	    return createRefreshToken(user);
 	}	
 }

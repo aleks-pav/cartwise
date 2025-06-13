@@ -19,7 +19,6 @@ public class AuthController {
 		this.authService = authService;
 		this.cookieService = cookieService;
 	}
-
 	
 	
 	@PostMapping("/signup")
@@ -30,15 +29,16 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> signUp(@Valid @RequestBody LoginRequest request, HttpServletResponse response){
-		LoginResponse loginResponse = authService.login(request);
-		response.addHeader(HttpHeaders.SET_COOKIE, cookieService.createRefreshTokenCookie(loginResponse.refreshToken()).toString());
-		//TODO fix LoginResponse
-		return ResponseEntity.ok( new LoginResponse(loginResponse.token(), null, loginResponse.user()) );
+		AuthDto auth = authService.login(request);
+		response.addHeader(HttpHeaders.SET_COOKIE, cookieService.createRefreshTokenCookie(auth.getRefreshToken()).toString());
+		return ResponseEntity.ok( new LoginResponse(auth.getToken(), auth.getUser()) );
 	}
 	
 	@PostMapping("/refresh")
-	public ResponseEntity<LoginResponse> refreshToken(@CookieValue String refreshToken) {
-	    return ResponseEntity.ok( authService.refreshToken(refreshToken) );
+	public ResponseEntity<LoginResponse> refreshToken(@CookieValue String refreshToken, HttpServletResponse response) {
+		AuthDto auth = authService.refreshToken(refreshToken);
+		response.addHeader(HttpHeaders.SET_COOKIE, cookieService.createRefreshTokenCookie(auth.getRefreshToken()).toString());
+	    return ResponseEntity.ok( new LoginResponse(auth.getToken(), auth.getUser()) );
 	}
 	
 	@PostMapping("/logout")
