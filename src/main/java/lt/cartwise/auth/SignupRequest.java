@@ -3,8 +3,8 @@ package lt.cartwise.auth;
 import jakarta.validation.constraints.*;
 
 public record SignupRequest(
+		@NotBlank(message = "Email is required")
 		@Email(message = "Invalid email format")
-	    @NotBlank(message = "Email is required")
 		String email,
 		
 		@Pattern(
