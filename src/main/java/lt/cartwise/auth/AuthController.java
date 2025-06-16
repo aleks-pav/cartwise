@@ -41,6 +41,7 @@ public class AuthController {
 	    return ResponseEntity.ok( new LoginResponse(auth.getToken(), auth.getUser()) );
 	}
 	
+	//TODO: logout not finished
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(HttpServletResponse response) {
 	    response.addHeader(HttpHeaders.SET_COOKIE, cookieService.expireRefreshTokenCookie().toString());

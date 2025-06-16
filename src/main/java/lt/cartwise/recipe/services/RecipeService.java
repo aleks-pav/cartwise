@@ -60,23 +60,18 @@ public class RecipeService {
 		return recipeRepository.findByIsPublic(isPublic).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}
 	
-	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic, Long userId) {
-		return recipeRepository.findByIsPublicAndUserId(isPublic, userId).stream().map( this::toRecipeWithAttributesDto ).toList();
-	}
-	
 	public Optional<RecipeWithAttributesDto> getIsPublicById(boolean isPublic, Long id) {
 		return recipeRepository.findByIdAndIsPublic(id, true).map( this::toRecipeWithAttributesDto );
 	}
 	
-	public Optional<RecipeWithAttributesDto> getIsPublicById(boolean isPublic, Long id, Long userId) {
-		return recipeRepository.findByIdAndIsPublicAndUserId(id, isPublic, userId).map( this::toRecipeWithAttributesDto );
+	public Optional<RecipeWithAttributesDto> getIsPublicById(Long id, Long userId) {
+		return recipeRepository.findByIdAndUserId(id, userId).map( this::toRecipeWithAttributesDto );
 	}
 	
-	public boolean deleteById(Long id) {
-		if( !recipeRepository.existsById(id) )
-			return false;
-		recipeRepository.deleteById(id);
-		return true;
+	public void deleteByIdByUser(Long id, Long userId) {
+		recipeRepository.findByIdAndUserId(id, userId).ifPresentOrElse(
+				recipeRepository::delete
+				, () -> new NotFoundException("Recipe (id: " + id + ") by user not found"));
 	}
 	
 	@Transactional
@@ -145,6 +140,7 @@ public class RecipeService {
 				, translationService.getGroupedTranslations( Model.PRODUCT, product.getId() )
 			);
 	}
+
 
 	
 

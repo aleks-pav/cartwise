@@ -22,18 +22,10 @@ public class RecipeController {
 	@GetMapping
 	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPublic(){
 		return ResponseEntity.ok( recipeService.getAllIsPublic(true) );
-//		return ResponseEntity.status(402).build();
 	}
 	
 	@GetMapping("{id}")
 	public ResponseEntity<RecipeWithAttributesDto> getPublicById(@PathVariable Long id){
 		return ResponseEntity.of( recipeService.getIsPublicById(true, id) );
-	}
-	
-	@DeleteMapping("{id}")
-	public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-		if( recipeService.deleteById(id) )
-			return ResponseEntity.ok().build();
-		return ResponseEntity.notFound().build();
 	}
 }

@@ -28,13 +28,19 @@ public class UserRecipeController {
 	
 	
 	@GetMapping
-	public ResponseEntity<List<RecipeWithAttributesDto>> getAllPrivate(@AuthenticationPrincipal UserDetails userDetails){
+	public ResponseEntity<List<RecipeWithAttributesDto>> getAllByUser(@AuthenticationPrincipal UserDetails userDetails){
 		return ResponseEntity.ok( userRecipeService.getAllByUserDetails(userDetails) );
 	}
 	
 	@GetMapping("{id}")
-	public ResponseEntity<RecipeWithAttributesDto> getById(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id){
-		return ResponseEntity.of( userRecipeService.getIsPublicById(false, userDetails, id) );
+	public ResponseEntity<RecipeWithAttributesDto> getByIdByUser(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id){
+		return ResponseEntity.of( userRecipeService.getByIdByUserDetails(userDetails, id) );
+	}
+	
+	@DeleteMapping("{id}")
+	public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id){
+		userRecipeService.deleteByIdByUserDetails(userDetails, id);
+		return ResponseEntity.status(204).build();
 	}
 	
 	// TODO:@Valid !!!!!!
@@ -49,4 +55,5 @@ public class UserRecipeController {
 		
 		return ResponseEntity.accepted().build();
 	}
+	
 }

@@ -1,37 +1,38 @@
 package lt.cartwise.config;
 
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.Statement;
+
+import javax.sql.DataSource;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import lt.cartwise.enums.Unit;
-import lt.cartwise.product.entities.Product;
 import lt.cartwise.product.repositories.ProductRepository;
 
 @Configuration
 public class InitConfiguration {
-
+	
 	@Bean
-	CommandLineRunner init(ProductRepository productRepository) {
+	CommandLineRunner init(ProductRepository productRepository, DataSource dataSource) {
 		return args -> {
 			if( productRepository.count() < 1 ) {
-				List<Product> products = List.of(
-					    new Product(null, "Apple", 52, Unit.pcs, null, null),
-					    new Product(null, "Banana", 89, Unit.pcs, null, null),
-					    new Product(null, "Milk", 42, Unit.ml, null, null),
-					    new Product(null, "Sugar", 387, Unit.g, null, null),
-					    new Product(null, "Butter", 717, Unit.g, null, null),
-					    new Product(null, "Olive Oil", 884, Unit.tbsp, null, null),
-					    new Product(null, "Salt", 0, Unit.tsp, null, null),
-					    new Product(null, "Chicken Breast", 165, Unit.g, null, null),
-					    new Product(null, "Egg", 68, Unit.pcs, null, null),
-					    new Product(null, "Honey", 304, Unit.tbsp, null, null)
-					);
-				productRepository.saveAll(products);
+				try (Connection conn = dataSource.getConnection(); InputStream inputStream = getClass().getResourceAsStream("/products.sql")) {
+					if (inputStream == null) {
+						throw new FileNotFoundException("SQL file not found in resources");
+					}
+					String sql = new String(inputStream.readAllBytes());
+					Statement statement = conn.createStatement();
+					for (String singleSql : sql.split(";")) {
+						if (!singleSql.trim().isEmpty()) {
+							statement.execute(singleSql.trim());
+						}
+					}
+				}
 			}
 		};
-		
 	}
 }

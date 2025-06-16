@@ -44,6 +44,7 @@ public class SecurityConfiguration {
         	.cors(Customizer.withDefaults()) 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                // TODO: admin controller
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/plans/**").hasAnyRole("USER", "ADMIN")

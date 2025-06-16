@@ -5,6 +5,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:env.properties")
-public class Env {
+public class EnvConfiguration {
 
 }

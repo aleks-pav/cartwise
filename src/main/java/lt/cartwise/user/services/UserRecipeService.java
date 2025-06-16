@@ -40,16 +40,21 @@ public class UserRecipeService {
 		return recipeService.getAllByUser(userId);
 	}
 	
-	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic, UserDetails userDetails) {
+	public List<RecipeWithAttributesDto> getRecipeByUserDetails(UserDetails userDetails) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return recipeService.getAllIsPublic(isPublic, userId);
+		return recipeService.getAllByUser(userId);
+	}
+	
+	public Optional<RecipeWithAttributesDto> getByIdByUserDetails(UserDetails userDetails, Long recipeId) {
+		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
+		return recipeService.getIsPublicById(recipeId, userId);
 	}
 
-	public Optional<RecipeWithAttributesDto> getIsPublicById(boolean isPublic, UserDetails userDetails, Long recipeId) {
+	public void deleteByIdByUserDetails(UserDetails userDetails, Long id) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return recipeService.getIsPublicById(isPublic, recipeId, userId);
+		recipeService.deleteByIdByUser(id, userId);
 	}
-
+	
 	@Transactional
 	public void createRecipe(UserDetails userDetails, @Valid RecipePostRequest recipeCreate, List<MultipartFile> files) {
 		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
@@ -61,6 +66,7 @@ public class UserRecipeService {
 			imageGalleryService.createGallery(Model.RECIPE, recipe.getId(), uploadedUrls);
 	    }
 	}
+
 
 
 	
