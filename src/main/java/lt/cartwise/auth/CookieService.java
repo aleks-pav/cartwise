@@ -17,7 +17,7 @@ public class CookieService {
 				.from("refreshToken", token)
 				.httpOnly(true)
 				.secure(isProduction)
-				.path("/api/auth/refresh")
+				.path("/api/auth")
 				.maxAge(Duration.ofDays(7))
 				.sameSite("Strict")
 				.build();
@@ -29,7 +29,7 @@ public class CookieService {
 				.from("refreshToken", "")
 				.httpOnly(true)
 				.secure(isProduction)
-				.path("/api/auth/refresh")
+				.path("/api/auth")
 				.maxAge(Duration.ofDays(0))
 				.sameSite("Strict")
 				.build();

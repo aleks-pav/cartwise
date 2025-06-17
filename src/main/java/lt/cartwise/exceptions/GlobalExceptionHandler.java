@@ -29,8 +29,16 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(InvalidRefreshTokenException.class)
-	public ResponseEntity<Map<String, Object>> notFound(InvalidRefreshTokenException ex) {
+	public ResponseEntity<Map<String, Object>> unauthorized(InvalidRefreshTokenException ex) {
 		logger.debug("Vartotojas gavo InvalidRefreshTokenException: " + ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(createErrorBody(ex.getMessage()));
+	}
+	
+	@ExceptionHandler(InvalidGoogleOAuthException.class)
+	public ResponseEntity<Map<String, Object>> unauthorized(InvalidGoogleOAuthException ex) {
+		logger.debug("Vartotojas gavo InvalidGoogleOAuthException: " + ex.getMessage());
 
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 				.body(createErrorBody(ex.getMessage()));

@@ -2,6 +2,8 @@ package lt.cartwise.user.mappers;
 
 import org.springframework.stereotype.Component;
 
+import lt.cartwise.plan.dto.PlanWithAttributesDto;
+import lt.cartwise.plan.entities.Plan;
 import lt.cartwise.plan.mappers.PlanMapper;
 import lt.cartwise.user.dto.UserDto;
 import lt.cartwise.user.entities.User;
@@ -25,11 +27,20 @@ public class UserMapper {
 	
 	public UserDto toDto(User entity) {
 		String avatarSrc = ( entity.getAvatar() != null ) ? "/avatars/" + entity.getId() : null;
+		
+		PlanWithAttributesDto planDto = (entity.getPlans() != null)
+		        ? entity.getPlans().stream()
+		            .filter(Plan::getIsActive)
+		            .findFirst()
+		            .map(planMapper::toPlanWithAttributesDto)
+		            .orElse(null)
+		        : null;
+		
 		return new UserDto(entity.getId()
 				, entity.getEmail()
 				, entity.getName()
 				, avatarSrc
-				, entity.getPlans().stream().filter(plan -> plan.getIsActive()).findFirst().map( planMapper::toPlanWithAttributesDto ).orElse(null));
+				, planDto);
 	}
 	
 }
