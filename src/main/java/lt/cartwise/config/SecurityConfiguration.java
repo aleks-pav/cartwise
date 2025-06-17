@@ -21,53 +21,52 @@ import lt.cartwise.security.JwtRequestFilter;
 
 @Configuration
 public class SecurityConfiguration {
-	
+
 	JwtRequestFilter jwtRequestFilter;
-	
-    public SecurityConfiguration(JwtRequestFilter jwtRequestFilter) {
+
+	public SecurityConfiguration(JwtRequestFilter jwtRequestFilter) {
 		this.jwtRequestFilter = jwtRequestFilter;
 	}
 
 	@Bean
-    PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	};
-	
+
 	@Bean
 	AuthenticationManager authentication(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
-	
+
 	@Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-        	.cors(Customizer.withDefaults()) 
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                // TODO: admin controller
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/api/plans/**").hasAnyRole("USER", "ADMIN")
-                .anyRequest().permitAll()
-            )
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable())
+				.cors(Customizer.withDefaults())
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/api/auth/**").permitAll()
+						// TODO: admin controller
+						.requestMatchers("/api/admin/**").hasRole("ADMIN")
+						.requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
+						.requestMatchers("/api/plans/**").hasAnyRole("USER", "ADMIN")
+						.anyRequest().permitAll())
+						.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
-	
+		return http.build();
+	}
+
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
-	    CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowedOrigins(List.of("http://localhost:5173"));
-	    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-	    config.setAllowedHeaders(List.of("*"));
-	    config.setAllowCredentials(true);
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedOrigins(List.of("http://localhost:5173"));
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+		config.setAllowedHeaders(List.of("*"));
+		config.setAllowCredentials(true);
 
-	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    source.registerCorsConfiguration("/api/**", config);
-	    return source;
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/api/**", config);
+		return source;
 	}
 
 }

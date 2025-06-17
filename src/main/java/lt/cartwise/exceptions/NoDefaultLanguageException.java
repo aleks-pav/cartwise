@@ -1,7 +1,6 @@
 package lt.cartwise.exceptions;
 
 public class NoDefaultLanguageException extends RuntimeException {
-
 	/**
 	 * 
 	 */
@@ -11,5 +10,4 @@ public class NoDefaultLanguageException extends RuntimeException {
 		super(message);
 	}
 
-	
 }

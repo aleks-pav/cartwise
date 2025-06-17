@@ -4,24 +4,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class PlanWithAttributesDto {
-	
+
 	private Long id;
 	private String name;
 	private Boolean isActive;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	
+
 	private List<PlanRecipeDto> recipes;
-//	private List<PlanProductDto> products;
-	
+// TODO:	private List<PlanProductDto> products;
+
 	private String shoppingList;
 
-	public PlanWithAttributesDto(Long id
-			, String name
-			, Boolean isActive
-			, LocalDateTime createdAt
-			, LocalDateTime updatedAt
-			, List<PlanRecipeDto> recipes) {
+	public PlanWithAttributesDto(Long id, String name, Boolean isActive, LocalDateTime createdAt,
+			LocalDateTime updatedAt, List<PlanRecipeDto> recipes) {
 		this.id = id;
 		this.name = name;
 		this.isActive = isActive;
@@ -85,6 +81,5 @@ public class PlanWithAttributesDto {
 	public void setShoppingList(String shoppingList) {
 		this.shoppingList = shoppingList;
 	}
-	
-	
+
 }

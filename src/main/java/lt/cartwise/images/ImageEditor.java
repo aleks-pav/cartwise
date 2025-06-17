@@ -11,7 +11,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.springframework.http.MediaType;
 
 
-//TODO investigate this class
+//TODO redundant?
 public class ImageEditor {
 
 	public static byte[] convertToPng(byte[] source) throws IOException {

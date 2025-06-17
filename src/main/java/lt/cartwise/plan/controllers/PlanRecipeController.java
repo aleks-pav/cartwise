@@ -14,28 +14,33 @@ import lt.cartwise.plan.services.PlanRecipeService;
 @RestController
 @RequestMapping("/api/plans/recipes")
 public class PlanRecipeController {
-	
+
 	private final PlanRecipeService planRecipeService;
 
 	public PlanRecipeController(PlanRecipeService planRecipeService) {
 		this.planRecipeService = planRecipeService;
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<Void> createPlanRecipe(@AuthenticationPrincipal UserDetails userDetails
-			, @RequestBody @Valid PlanRecipePostRequestList requestList){
+	public ResponseEntity<Void> createPlanRecipe(@AuthenticationPrincipal UserDetails userDetails,
+			@RequestBody @Valid PlanRecipePostRequestList requestList) {
 		planRecipeService.createPlanRecipe(userDetails, requestList.recipes());
+
 		return ResponseEntity.accepted().build();
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deletePlanRecipe(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id){
+	public ResponseEntity<Void> deletePlanRecipe(@AuthenticationPrincipal UserDetails userDetails,
+			@PathVariable Long id) {
 		planRecipeService.deletePlanRecipe(userDetails, id);
+
 		return ResponseEntity.ok().build();
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<PlanRecipeDto> putPlanRecipe(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody PlanRecipePatchRequest dto){
+	public ResponseEntity<PlanRecipeDto> putPlanRecipe(@AuthenticationPrincipal UserDetails userDetails,
+			@RequestBody @Valid PlanRecipePatchRequest dto) {
+
 		return ResponseEntity.ok(planRecipeService.putPlanRecipe(userDetails, dto));
 	}
 }

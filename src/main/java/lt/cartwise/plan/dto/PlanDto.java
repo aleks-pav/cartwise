@@ -18,8 +18,6 @@ public class PlanDto {
 		this.updatedAt = updatedAt;
 	}
 
-	
-	
 	public Long getId() {
 		return id;
 	}
@@ -60,6 +58,4 @@ public class PlanDto {
 		this.updatedAt = updatedAt;
 	}
 
-	
-	
 }

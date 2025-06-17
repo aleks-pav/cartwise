@@ -1,7 +1,6 @@
 package lt.cartwise.exceptions;
 
 public class InvalidRefreshTokenException extends RuntimeException {
-
 	/**
 	 * 
 	 */

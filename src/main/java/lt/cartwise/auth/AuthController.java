@@ -1,6 +1,7 @@
 package lt.cartwise.auth;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class AuthController {
 	public ResponseEntity<String> signUp(@Valid @RequestBody SignupRequest request) {
 		authService.signUp(request);
 		
-		return ResponseEntity.ok("Registration successfull");
+		return ResponseEntity.status(HttpStatus.CREATED).body("Registration successfull");
 	}
 
 	@PostMapping("/login")
@@ -50,7 +51,7 @@ public class AuthController {
 	public ResponseEntity<Void> logout(HttpServletResponse response) {
 		response.addHeader(HttpHeaders.SET_COOKIE, cookieService.expireRefreshTokenCookie().toString());
 		
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
 }

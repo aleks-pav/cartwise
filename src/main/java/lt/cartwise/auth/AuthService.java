@@ -67,7 +67,7 @@ public class AuthService {
 
 		return new AuthDto(jwtUtils.generateToken(user.getEmail()), newToken.getToken(), userMapper.toDto(user));
 	}
-
+	
 	private RefreshToken createRefreshToken(User user) {
 		Instant now = Instant.now();
 		String token = UUID.randomUUID().toString();
@@ -76,7 +76,7 @@ public class AuthService {
 		return refreshTokenRepository.save(refreshToken);
 	}
 
-	private RefreshToken rotateToken(String token) {
+	public RefreshToken rotateToken(String token) {
 		RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
 				.orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token"));
 

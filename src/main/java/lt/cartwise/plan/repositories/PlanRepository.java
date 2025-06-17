@@ -9,8 +9,10 @@ import org.springframework.stereotype.Repository;
 import lt.cartwise.plan.entities.Plan;
 
 @Repository
-public interface PlanRepository extends JpaRepository<Plan,Long> {
+public interface PlanRepository extends JpaRepository<Plan, Long> {
 	List<Plan> findByUserIdOrderByCreatedAtDesc(Long userId);
+
 	List<Plan> findByIsActiveAndUserIdOrderByCreatedAtDesc(Boolean isActive, Long userId);
+
 	Optional<Plan> findByIdAndUserId(Long id, Long userId);
 }

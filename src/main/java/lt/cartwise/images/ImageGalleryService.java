@@ -12,7 +12,7 @@ import lt.cartwise.enums.Model;
 
 @Service
 public class ImageGalleryService {
-	
+
 	private final ImageGalleryRepository imageGalleryRepository;
 	private final ImageMapper imageMapper;
 
@@ -21,32 +21,22 @@ public class ImageGalleryService {
 		this.imageMapper = imageMapper;
 	}
 
-
-	
 	@Transactional
 	public void createGallery(Model model, Long imageableId, List<String> uploadedUrls) {
 		ImageGallery gallery = new ImageGallery(null, imageableId, model, "main", new ArrayList<>());
 		uploadedUrls.stream().map(url -> {
-			Image image = new Image(null, url, null, true,  null);
+			Image image = new Image(null, url, null, true, null);
 			gallery.addImage(image);
 			return image;
 		}).toList();
 		imageGalleryRepository.save(gallery);
 	}
 
-
-	public Map<String,List<ImageResponse>> getActiveByType(Model imageableType, Long imageableId) {
-		List<ImageGallery> galleries = imageGalleryRepository.findByImageableTypeAndImageableId(imageableType, imageableId);
-		return galleries.stream()
-				.collect( Collectors.toMap(
-						ImageGallery::getFieldName
-						, (gallery) -> gallery.getImages().stream().filter(Image::getIsActive).map(imageMapper::toResponse).toList()
-					));
+	public Map<String, List<ImageResponse>> getActiveByType(Model imageableType, Long imageableId) {
+		List<ImageGallery> galleries = imageGalleryRepository.findByImageableTypeAndImageableId(imageableType,
+				imageableId);
+		return galleries.stream().collect(Collectors.toMap(ImageGallery::getFieldName, (gallery) -> gallery.getImages()
+				.stream().filter(Image::getIsActive).map(imageMapper::toResponse).toList()));
 	}
-	
+
 }
-
-
-
-
-	

@@ -10,16 +10,17 @@ public class Image extends Timestampable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String src;
 	private Integer position;
 	private Boolean isActive;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "gallery_id")
 	private ImageGallery gallery;
-	
+
 	public Image() {};
+
 	public Image(Long id, String src, Integer position, Boolean isActive, ImageGallery gallery) {
 		this.id = id;
 		this.src = src;
@@ -28,8 +29,6 @@ public class Image extends Timestampable {
 		this.gallery = gallery;
 	}
 
-	
-	
 	public Long getId() {
 		return id;
 	}
@@ -69,8 +68,5 @@ public class Image extends Timestampable {
 	public void setGallery(ImageGallery gallery) {
 		this.gallery = gallery;
 	}
-
-	
-	
 
 }

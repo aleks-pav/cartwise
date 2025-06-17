@@ -8,7 +8,7 @@ import lt.cartwise.recipe.dto.RecipeDto;
 public class PlanRecipeDto {
 
 	private Long id;
-	
+
 	private Double portions;
 	private LocalDate planDate;
 	private MealType type;
@@ -22,8 +22,6 @@ public class PlanRecipeDto {
 		this.recipe = recipe;
 	}
 
-	
-	
 	public Long getId() {
 		return id;
 	}
@@ -63,6 +61,5 @@ public class PlanRecipeDto {
 	public void setRecipe(RecipeDto recipe) {
 		this.recipe = recipe;
 	}
-	
-	
+
 }

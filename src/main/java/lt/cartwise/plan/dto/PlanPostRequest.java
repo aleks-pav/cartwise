@@ -7,5 +7,4 @@ public record PlanPostRequest(
 		@Size(min = 3, message = "Plan name must contain at least 3 symbols")
 		@NotEmpty(message = "Plan name field is required")
 		String name
-		
 		) {}

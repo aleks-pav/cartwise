@@ -11,5 +11,4 @@ import lt.cartwise.user.entities.User;
 @Repository
 public interface PlanRecipeRepository extends JpaRepository<PlanRecipe, Long> {
 	Optional<PlanRecipe> findByIdAndPlan_User(Long id, User user);
-
 }
