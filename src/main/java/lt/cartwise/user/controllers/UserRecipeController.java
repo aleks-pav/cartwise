@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lt.cartwise.GlobalValidator;
 import lt.cartwise.recipe.dto.RecipePostRequest;
 import lt.cartwise.recipe.dto.RecipeWithAttributesDto;
 import lt.cartwise.user.services.UserRecipeService;
@@ -20,40 +21,42 @@ import lt.cartwise.user.services.UserRecipeService;
 @RequestMapping("/api/users/recipes")
 public class UserRecipeController {
 	private final UserRecipeService userRecipeService;
+	private final GlobalValidator globalValidator;
 
-	public UserRecipeController(UserRecipeService userRecipeService) {
+	public UserRecipeController(UserRecipeService userRecipeService, GlobalValidator globalValidator) {
 		this.userRecipeService = userRecipeService;
+		this.globalValidator = globalValidator;
 	}
 
-	
-	
 	@GetMapping
-	public ResponseEntity<List<RecipeWithAttributesDto>> getAllByUser(@AuthenticationPrincipal UserDetails userDetails){
-		return ResponseEntity.ok( userRecipeService.getAllByUserDetails(userDetails) );
+	public ResponseEntity<List<RecipeWithAttributesDto>> getAllByUser(
+			@AuthenticationPrincipal UserDetails userDetails) {
+		return ResponseEntity.ok(userRecipeService.getAllByUserDetails(userDetails));
 	}
-	
+
 	@GetMapping("{id}")
-	public ResponseEntity<RecipeWithAttributesDto> getByIdByUser(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id){
-		return ResponseEntity.of( userRecipeService.getByIdByUserDetails(userDetails, id) );
+	public ResponseEntity<RecipeWithAttributesDto> getByIdByUser(@AuthenticationPrincipal UserDetails userDetails,
+			@PathVariable Long id) {
+		return ResponseEntity.of(userRecipeService.getByIdByUserDetails(userDetails, id));
 	}
-	
+
 	@DeleteMapping("{id}")
-	public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id){
+	public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
 		userRecipeService.deleteByIdByUserDetails(userDetails, id);
 		return ResponseEntity.status(204).build();
 	}
-	
-	// TODO:@Valid !!!!!!
+
 	@PostMapping
-	public ResponseEntity<Void> createRecipe(@AuthenticationPrincipal UserDetails userDetails
-			, @RequestPart("data") String jsonString
-			, @RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonMappingException, JsonProcessingException{
-		
+	public ResponseEntity<Void> createRecipe(@AuthenticationPrincipal UserDetails userDetails,
+			@RequestPart("data") String jsonString,
+			@RequestPart(value = "files", required = false) List<MultipartFile> files)
+			throws JsonMappingException, JsonProcessingException {
+
 		RecipePostRequest recipeCreate = new ObjectMapper().readValue(jsonString, RecipePostRequest.class);
-		
+		globalValidator.validate(recipeCreate);
 		userRecipeService.createRecipe(userDetails, recipeCreate, files);
-		
+
 		return ResponseEntity.accepted().build();
 	}
-	
+
 }

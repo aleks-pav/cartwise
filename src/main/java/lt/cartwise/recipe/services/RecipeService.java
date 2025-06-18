@@ -82,6 +82,7 @@ public class RecipeService {
 	public Recipe createRecipe(@Valid RecipePostRequest recipeCreate, User user)  {
 		Recipe recipe = recipeMapper.toEntity(recipeCreate);
 		recipe.setUser(user);
+		recipe.setIsVerified(false);
 		recipe.setCategories( recipeCategoryRepository.findAllById(recipeCreate.categories()) );
 		
 		List<Ingridient> ingridients = recipeCreate.ingridients().stream().map( ingridientDto -> {
