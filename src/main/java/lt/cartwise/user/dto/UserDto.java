@@ -1,5 +1,6 @@
 package lt.cartwise.user.dto;
 
+import lt.cartwise.enums.Role;
 import lt.cartwise.plan.dto.PlanWithAttributesDto;
 
 public class UserDto {
@@ -8,6 +9,7 @@ public class UserDto {
 	private String email;
 	private String name;
 	private String avatarSrc;
+	private Role role;
 	private PlanWithAttributesDto plan;
 
 	public UserDto() {
@@ -17,11 +19,12 @@ public class UserDto {
 		this.id = id;
 	}
 
-	public UserDto(Long id, String email, String name, String avatarSrc, PlanWithAttributesDto plan) {
+	public UserDto(Long id, String email, String name, String avatarSrc, Role role, PlanWithAttributesDto plan) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
 		this.avatarSrc = avatarSrc;
+		this.role = role;
 		this.plan = plan;
 	}
 
@@ -55,6 +58,14 @@ public class UserDto {
 
 	public void setAvatarSrc(String avatarSrc) {
 		this.avatarSrc = avatarSrc;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	public PlanWithAttributesDto getPlan() {

@@ -6,37 +6,32 @@ import jakarta.persistence.*;
 import lt.cartwise.Timestampable;
 import lt.cartwise.user.entities.User;
 
-
 @Entity
 @Table(name = "recipes")
 public class Recipe extends Timestampable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String name;
 	private Integer portions;
 	private Integer timePreparation = 0;
 	private Integer timeCooking = 0;
 	private Boolean isPublic;
-	
-	
+	private Boolean isVerified;
+
 	@ManyToMany
-	@JoinTable(name = "recipes_recipe_categories"
-			,joinColumns = @JoinColumn(name = "recipe_id")
-			, inverseJoinColumns = @JoinColumn(name = "category_id")
-	)
+	@JoinTable(name = "recipes_recipe_categories", joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<RecipeCategory> categories;
 
-	@OneToMany (mappedBy = "recipe", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
 	private List<Ingridient> ingidients;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -85,6 +80,14 @@ public class Recipe extends Timestampable {
 		this.isPublic = isPublic;
 	}
 
+	public Boolean getIsVerified() {
+		return isVerified;
+	}
+
+	public void setIsVerified(Boolean isVerified) {
+		this.isVerified = isVerified;
+	}
+
 	public List<RecipeCategory> getCategories() {
 		return categories;
 	}
@@ -108,7 +111,5 @@ public class Recipe extends Timestampable {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
-	
-	
+
 }

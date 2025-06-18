@@ -56,12 +56,16 @@ public class RecipeService {
 		return recipeRepository.findByUserId(userId).stream().map( this::toRecipeWithAttributesDto ).toList();
 	}
 	
-	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic) {
-		return recipeRepository.findByIsPublic(isPublic).stream().map( this::toRecipeWithAttributesDto ).toList();
+	public List<RecipeWithAttributesDto> getAllIsPublic(boolean isPublic, boolean isVerified) {
+		return recipeRepository.findByIsPublicAndIsVerified(isPublic, isVerified).stream().map( this::toRecipeWithAttributesDto ).toList();
+	}
+	
+	public List<Recipe> getAllIsPublic(boolean isPublic) {
+		return recipeRepository.findByIsPublic(isPublic);
 	}
 	
 	public Optional<RecipeWithAttributesDto> getIsPublicById(boolean isPublic, Long id) {
-		return recipeRepository.findByIdAndIsPublic(id, true).map( this::toRecipeWithAttributesDto );
+		return recipeRepository.findByIdAndIsPublicAndIsVerified(id, true, true).map( this::toRecipeWithAttributesDto );
 	}
 	
 	public Optional<RecipeWithAttributesDto> getIsPublicById(Long id, Long userId) {
@@ -96,6 +100,10 @@ public class RecipeService {
 	
 	public Optional<Recipe> getRecipeOptional(Long id){
 		return recipeRepository.findById(id);
+	}
+	
+	public Recipe saveRecipe(Recipe recipe) {
+		return recipeRepository.save(recipe);
 	}
 	
 	
@@ -140,6 +148,8 @@ public class RecipeService {
 				, translationService.getGroupedTranslations( Model.PRODUCT, product.getId() )
 			);
 	}
+
+	
 
 
 	

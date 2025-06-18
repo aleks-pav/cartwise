@@ -22,72 +22,75 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lt.cartwise.exceptions.NotFoundException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-	
+
 	private final JwtUtils jwtUtils;
 	private final CartwiseUserDetailsService userDetailsService;
-	
-	Logger logger = LoggerFactory.getLogger( JwtRequestFilter.class );
+
+	Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 
 	public JwtRequestFilter(JwtUtils jwtUtils, CartwiseUserDetailsService userDetailsService) {
 		this.jwtUtils = jwtUtils;
 		this.userDetailsService = userDetailsService;
 	}
 
-
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		
+
 		final String authHeader = request.getHeader("Authorization");
-        String jwt = null, email = null;
-        
-        try {
-	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-	            jwt = authHeader.substring(7);
-	            email = jwtUtils.extractEmail(jwt);
-	        } 
-			
-	        if (email != null 
-	        		&& SecurityContextHolder
-	        			.getContext().getAuthentication() == null) {
-	        	
-	        	UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-	        	
-	        	if (jwtUtils.validateToken(jwt, email)) {
-	        		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails
-	        				, null
-	        				, userDetails.getAuthorities());
-	                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-	                SecurityContextHolder.getContext().setAuthentication(authToken);
-	        	}
-	        	
-	        }
-	        
-	        filterChain.doFilter(request, response);
-        }catch(ExpiredJwtException e) {
-        	sendErrorResponse(response, "JWT token expired", HttpServletResponse.SC_UNAUTHORIZED);
-        }catch(JwtException e) {
-        	sendErrorResponse(response, "Invalid token", HttpServletResponse.SC_UNAUTHORIZED);
-        }
+		String jwt = null, email = null;
+
+		try {
+			if (authHeader != null && authHeader.startsWith("Bearer ")) {
+				jwt = authHeader.substring(7);
+				
+				email = jwtUtils.extractEmail(jwt);
+			}
+
+			if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+
+				if( !userDetails.isEnabled() ) {
+					throw new NotFoundException("User not active");
+				}
+
+				if (jwtUtils.validateToken(jwt, email)) {
+					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+							null, userDetails.getAuthorities());
+					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+					SecurityContextHolder.getContext().setAuthentication(authToken);
+				}
+
+			}
+
+			filterChain.doFilter(request, response);
+		} catch (NotFoundException e) {
+			sendErrorResponse(response, "User not active", HttpServletResponse.SC_UNAUTHORIZED);
+		} catch (ExpiredJwtException e) {
+			sendErrorResponse(response, "JWT token expired", HttpServletResponse.SC_UNAUTHORIZED);
+		} catch (JwtException e) {
+			sendErrorResponse(response, "Invalid token", HttpServletResponse.SC_UNAUTHORIZED);
+		}
 	}
-	
-	
-	private void sendErrorResponse(HttpServletResponse response, String errorMessage, int statusCode) throws IOException {
+
+	private void sendErrorResponse(HttpServletResponse response, String errorMessage, int statusCode)
+			throws IOException {
 		logger.debug(errorMessage);
-		
-		Map<String,Object> error = new LinkedHashMap<>();
-		
-	    error.put("error", errorMessage);
-	    error.put("timestamp", LocalDateTime.now().toString());
 
-	    response.setStatus(statusCode);
-	    response.setContentType("application/json");
+		Map<String, Object> error = new LinkedHashMap<>();
 
-	    ObjectMapper mapper = new ObjectMapper();
-	    response.getWriter().write(mapper.writeValueAsString(error));
+		error.put("error", errorMessage);
+		error.put("timestamp", LocalDateTime.now().toString());
+
+		response.setStatus(statusCode);
+		response.setContentType("application/json");
+
+		ObjectMapper mapper = new ObjectMapper();
+		response.getWriter().write(mapper.writeValueAsString(error));
 	}
 }

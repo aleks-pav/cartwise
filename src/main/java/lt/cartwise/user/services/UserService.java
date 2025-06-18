@@ -1,6 +1,7 @@
 package lt.cartwise.user.services;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,10 @@ public class UserService {
 	public UserService(UserRepository userRepository, UserMapper userMapper) {
 		this.userRepository = userRepository;
 		this.userMapper = userMapper;
+	}
+
+	public List<User> getAll() {
+		return userRepository.findAll();
 	}
 
 	public Optional<User> getUserById(Long id) {
@@ -64,8 +69,17 @@ public class UserService {
 	
 	
 	
+	
 	public Optional<User> getUserOptional(UserDetails userDetails){
 		return userRepository.findByEmail(userDetails.getUsername());
+	}
+	
+	public Optional<User> getUserOptional(Long id){
+		return userRepository.findById(id);
+	}
+	
+	public User saveUser(User user){
+		return userRepository.save(user);
 	}
 
 	

@@ -7,6 +7,7 @@ import lt.cartwise.enums.Model;
 import lt.cartwise.recipe.dto.RecipeCreateDto;
 import lt.cartwise.recipe.dto.RecipeDto;
 import lt.cartwise.recipe.dto.RecipePostRequest;
+import lt.cartwise.recipe.dto.RecipeResponse;
 import lt.cartwise.recipe.entities.Recipe;
 import lt.cartwise.translations.TranslationService;
 
@@ -56,5 +57,9 @@ public class RecipeMapper {
 	
 	public RecipeDto toDto(Recipe entity, String language) {
 		return new RecipeDto(entity.getId(), entity.getName(), translationService.getGroupedTranslations( Model.RECIPE, entity.getId(), language ));
+	}
+	
+	public RecipeResponse toRecipeResponse(Recipe entity) {
+		return new RecipeResponse(entity.getId(), entity.getName(), entity.getIsVerified(), entity.getCreatedAt());
 	}
 }
