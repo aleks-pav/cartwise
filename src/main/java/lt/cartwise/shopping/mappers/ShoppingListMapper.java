@@ -11,23 +11,21 @@ import lt.cartwise.shopping.entities.ShoppingListProduct;
 @Component
 public class ShoppingListMapper {
 	private final ProductMapper productMapper;
-	
+
 	public ShoppingListMapper(ProductMapper productMapper) {
 		this.productMapper = productMapper;
 	}
 
-	
-	
 	public ShoppingListDto toDto(ShoppingList entity) {
-		return new ShoppingListDto( entity.getPlan().getName()
-				, entity.getProducts().stream().map( this::toShoppingListProductDto ).toList() );
+		return new ShoppingListDto(entity.getPlan().getName(),
+				entity.getProducts().stream().map(this::toShoppingListProductDto).toList());
 	}
-	
+
 	public ShoppingListProductDto toShoppingListProductDto(ShoppingListProduct entity) {
-		return new ShoppingListProductDto(entity.getId()
-				, entity.getAmount()
-				, entity.getUnits()
-				, entity.getIsCompleted()
-				, productMapper.toDto(entity.getProduct()));
+		return new ShoppingListProductDto(entity.getId(),
+				entity.getAmount(),
+				entity.getUnits(),
+				entity.getIsCompleted(),
+				productMapper.toDto(entity.getProduct()));
 	}
 }

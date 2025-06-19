@@ -3,9 +3,9 @@ package lt.cartwise.translations;
 import java.util.Map;
 
 public class TranslationByLanguageDto {
-	
+
 	private String language;
-	private Map<String,String> fields;
+	private Map<String, String> fields;
 
 	public TranslationByLanguageDto(String language, Map<String, String> fields) {
 		this.language = language;
@@ -15,16 +15,17 @@ public class TranslationByLanguageDto {
 	public String getLanguage() {
 		return language;
 	}
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
 	public Map<String, String> getFields() {
 		return fields;
 	}
+
 	public void setFields(Map<String, String> fields) {
 		this.fields = fields;
 	}
-	
-	
-	
+
 }

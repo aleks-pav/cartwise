@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Positive;
 import lt.cartwise.enums.Unit;
 
 public record IngridientPostRequest(
-
 		@NotNull
 		@Min(1)
 		Long productId,

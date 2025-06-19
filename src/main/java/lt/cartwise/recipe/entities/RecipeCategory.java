@@ -6,27 +6,31 @@ import jakarta.persistence.*;
 import lt.cartwise.Timestampable;
 
 @Entity
-@Table(
-		name = "recipe_categories"
-		, indexes = {@Index(name = "slug_lookup", columnList = "slug")}
-)
+@Table(name = "recipe_categories", indexes = { @Index(name = "slug_lookup", columnList = "slug") })
 public class RecipeCategory extends Timestampable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String name;
 	private String slug;
 	private Boolean isActive;
 	private Integer position;
-	
+
 	@ManyToMany(mappedBy = "categories")
 	private List<Recipe> recipes;
-	
-	
-	
-	
+
+	public RecipeCategory() {};
+			
+	public RecipeCategory(Long id, String name, String slug, Boolean isActive, Integer position, List<Recipe> recipes) {
+		this.id = id;
+		this.name = name;
+		this.slug = slug;
+		this.isActive = isActive;
+		this.position = position;
+		this.recipes = recipes;
+	}
 
 	public Long getId() {
 		return id;
@@ -75,9 +79,5 @@ public class RecipeCategory extends Timestampable {
 	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
 	}
-	
-	
 
-	
-	
 }

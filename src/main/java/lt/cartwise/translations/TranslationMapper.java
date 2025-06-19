@@ -8,22 +8,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TranslationMapper {
-	
-	
-	
-	public List<TranslationByLanguageDto> toTranslationByLanguageDto(List<Translation> translations){
-		return translations
-				.stream()
-				.collect( Collectors.groupingBy( Translation::getLanguage ))
-				.entrySet()
-				.stream()
+
+	public List<TranslationByLanguageDto> toTranslationByLanguageDto(List<Translation> translations) {
+		return translations.stream()
+				.collect(Collectors.groupingBy(Translation::getLanguage))
+				.entrySet().stream()
 				.map(entry -> {
-					Map<String, String> fields = entry
-							.getValue()
-							.stream()
-							.collect( Collectors.toMap(Translation::getFieldName, Translation::getValue) );
+					Map<String, String> fields = entry.getValue().stream()
+							.collect(Collectors.toMap(Translation::getFieldName, Translation::getValue));
 					return new TranslationByLanguageDto(entry.getKey(), fields);
-				})
-				.toList();
+				}).toList();
 	}
 }

@@ -40,7 +40,7 @@ public class PlanRecipeService {
 
 	public void createPlanRecipe(UserDetails userDetails, List<@Valid PlanRecipePostRequest> dtos) {
 		List<PlanRecipe> planRecipes = dtos.stream().map(dto -> {
-			Recipe recipe = recipeService.getRecipeOptional(dto.recipe_id())
+			Recipe recipe = recipeService.getOptionalById(dto.recipe_id())
 					.orElseThrow(() -> new NotFoundException("Recipe not found"));
 			Plan plan = planService.getActiveByUser(userDetails)
 					.orElseThrow(() -> new NotFoundException("Active plan for the user not found"));

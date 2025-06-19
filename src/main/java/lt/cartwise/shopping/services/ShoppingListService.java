@@ -20,76 +20,41 @@ import lt.cartwise.shopping.repositories.ShoppingListRepository;
 public class ShoppingListService {
 	private final ShoppingListRepository shoppingListRepository;
 	private final ShoppingListMapper shoppingListMapper;
-	
+
 	public ShoppingListService(ShoppingListRepository shoppingListRepository, ShoppingListMapper shoppingListMapper) {
 		this.shoppingListRepository = shoppingListRepository;
 		this.shoppingListMapper = shoppingListMapper;
 	}
 
-	
-	public Optional<ShoppingListDto> getShoppingList(String id) {
-		return shoppingListRepository.findById(id).map( shoppingListMapper::toDto );
+	public Optional<ShoppingListDto> getOptionalDtoById(String id) {
+		return shoppingListRepository.findById(id).map(shoppingListMapper::toDto);
 	}
-	
-	
+
 	@Transactional
 	public String createShoppingList(Plan plan, Map<Product, Map<Unit, Double>> products) {
 		Optional<ShoppingList> oldShoppingList = shoppingListRepository.findByPlanId(plan.getId());
-		oldShoppingList.ifPresent( (s) -> {
+		oldShoppingList.ifPresent((s) -> {
 			plan.setShoppingList(null);
 			shoppingListRepository.delete(s);
 			shoppingListRepository.flush();
-		} );
-		
+		});
+
 		ShoppingList shoppingList = new ShoppingList();
 		shoppingList.setPlan(plan);
-		
+
 		List<ShoppingListProduct> shoppingProducts = products.entrySet().stream()
-				.flatMap( entryProduct ->
-				entryProduct.getValue().entrySet().stream().map( entryUnit -> {
+				.flatMap(entryProduct -> entryProduct.getValue().entrySet().stream().map(entryUnit -> {
 					ShoppingListProduct shoppingProduct = new ShoppingListProduct();
-					shoppingProduct.setProduct( entryProduct.getKey() );
-					shoppingProduct.setUnits( entryUnit.getKey() );
-					shoppingProduct.setAmount( entryUnit.getValue() );
+					shoppingProduct.setProduct(entryProduct.getKey());
+					shoppingProduct.setUnits(entryUnit.getKey());
+					shoppingProduct.setAmount(entryUnit.getValue());
 					shoppingProduct.setIsCompleted(false);
 					shoppingProduct.setShoppingList(shoppingList);
 					return shoppingProduct;
-				})
-		).toList();
-		
+				})).toList();
+
 		shoppingList.setProducts(shoppingProducts);
-		
-		return shoppingListRepository.save( shoppingList ).getId();
+
+		return shoppingListRepository.save(shoppingList).getId();
 	}
-	
-//	@Transactional
-//	public String createShoppingList(UserDetails userDetails, Long planId) {
-//		Plan plan = planService.getPlan(dto.getPlanId(), new UserDto(dto.getUserId())).orElseThrow( () -> new NotFoundException("Plan by user not found") );
-//		Optional<ShoppingList> oldShoppingList = shoppingListRepository.findByPlanId(dto.getPlanId());
-//		oldShoppingList.ifPresent( (s) -> {
-//			plan.setShoppingList(null);
-//			shoppingListRepository.delete(s);
-//			shoppingListRepository.flush();
-//		} );
-//		
-//		ShoppingList shoppingList = new ShoppingList();
-//		shoppingList.setPlan(plan);
-//		
-//		List<ShoppingListProduct> shoppingProducts = planService.calculateProducts( plan.getId() ).entrySet().stream()
-//				.flatMap( entryProduct ->
-//				entryProduct.getValue().entrySet().stream().map( entryUnit -> {
-//					ShoppingListProduct shoppingProduct = new ShoppingListProduct();
-//					shoppingProduct.setProduct( entryProduct.getKey() );
-//					shoppingProduct.setUnits( entryUnit.getKey() );
-//					shoppingProduct.setAmount( entryUnit.getValue() );
-//					shoppingProduct.setIsCompleted(false);
-//					shoppingProduct.setShoppingList(shoppingList);
-//					return shoppingProduct;
-//				})
-//		).toList();
-//		
-//		shoppingList.setProducts(shoppingProducts);
-//		
-//		return shoppingListRepository.save( shoppingList ).getId();
-//	}
 }

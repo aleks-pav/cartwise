@@ -2,6 +2,7 @@ package lt.cartwise.recipe.controllers;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +10,6 @@ import lt.cartwise.recipe.dto.RecipeCategoryDto;
 import lt.cartwise.recipe.services.RecipeCategoryService;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/recipes/categories")
 public class RecipeCategoryController {
 
@@ -19,13 +19,11 @@ public class RecipeCategoryController {
 		this.recipeCategoryService = recipeCategoryService;
 	}
 	
-//	@GetMapping
-//	public ResponseEntity<List<RecipeCategoryDto>> getAll(){
-//		return ResponseEntity.ok( recipeCategoryService.getAll() );
-//	}
-	
 	@GetMapping
-	public ResponseEntity<List<RecipeCategoryDto>> getAll(@RequestParam String lng){
-		return ResponseEntity.ok( recipeCategoryService.getAll(lng) );
+	public ResponseEntity<List<RecipeCategoryDto>> getAllActive(@RequestParam String lng){
+		if (!List.of("EN", "LT", "FR", "DE").contains(lng.toUpperCase())) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		return ResponseEntity.ok( recipeCategoryService.getAllActive(lng) );
 	}
 }

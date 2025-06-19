@@ -9,7 +9,5 @@ import lt.cartwise.shopping.entities.ShoppingListProduct;
 
 @Repository
 public interface ShoppingListProductRepository extends JpaRepository<ShoppingListProduct, Long> {
-
 	Optional<ShoppingListProduct> findByIdAndShoppingListId(Long id, String shoppingListId);
-
 }

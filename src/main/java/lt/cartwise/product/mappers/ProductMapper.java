@@ -29,4 +29,9 @@ public class ProductMapper {
 				entity.getCalories(),
 				translationService.getGroupedTranslations(Model.PRODUCT, entity.getId(), lng));
 	}
+	
+	public ProductIngridientDto toProductIngridientDto(Product product) {
+		return new ProductIngridientDto(product.getId(), product.getName(), product.getCalories(),
+				translationService.getGroupedTranslations(Model.PRODUCT, product.getId()));
+	}
 }

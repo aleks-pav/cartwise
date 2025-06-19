@@ -9,21 +9,27 @@ import lt.cartwise.plan.entities.Plan;
 @Entity
 @Table(name = "shopping_lists")
 public class ShoppingList extends Timestampable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
-	
-	
+
 	@OneToOne
 	@JoinColumn(name = "plan_id", nullable = false)
 	private Plan plan;
-	
+
 	@OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL)
 	private List<ShoppingListProduct> products;
 
-	
-	
+	public ShoppingList() {};
+
+	public ShoppingList(String id, Plan plan, List<ShoppingListProduct> products) {
+		super();
+		this.id = id;
+		this.plan = plan;
+		this.products = products;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -47,6 +53,5 @@ public class ShoppingList extends Timestampable {
 	public void setProducts(List<ShoppingListProduct> products) {
 		this.products = products;
 	}
-	
-	
+
 }

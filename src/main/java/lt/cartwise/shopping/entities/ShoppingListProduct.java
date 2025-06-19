@@ -7,26 +7,35 @@ import lt.cartwise.product.entities.Product;
 @Entity
 @Table(name = "shopping_list_products")
 public class ShoppingListProduct {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private Double amount;
 	private Unit units;
 	private Boolean isCompleted;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "shopping_list_id", nullable = false)
 	private ShoppingList shoppingList;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
 	private Product product;
 
-	
-	
-	
+	public ShoppingListProduct() {};
+
+	public ShoppingListProduct(Long id, Double amount, Unit units, Boolean isCompleted, ShoppingList shoppingList,
+			Product product) {
+		this.id = id;
+		this.amount = amount;
+		this.units = units;
+		this.isCompleted = isCompleted;
+		this.shoppingList = shoppingList;
+		this.product = product;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -74,7 +83,5 @@ public class ShoppingListProduct {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
-	
-	
+
 }

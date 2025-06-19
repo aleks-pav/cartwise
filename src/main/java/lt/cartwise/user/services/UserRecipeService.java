@@ -37,22 +37,22 @@ public class UserRecipeService {
 
 	public List<RecipeWithAttributesDto> getAllByUserDetails(UserDetails userDetails) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return recipeService.getAllByUser(userId);
+		return recipeService.getAllByUserId(userId);
 	}
 	
 	public List<RecipeWithAttributesDto> getRecipeByUserDetails(UserDetails userDetails) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return recipeService.getAllByUser(userId);
+		return recipeService.getAllByUserId(userId);
 	}
 	
 	public Optional<RecipeWithAttributesDto> getByIdByUserDetails(UserDetails userDetails, Long recipeId) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return recipeService.getIsPublicById(recipeId, userId);
+		return recipeService.getOptionalDtoByIdUsedId(recipeId, userId);
 	}
 
 	public void deleteByIdByUserDetails(UserDetails userDetails, Long id) {
 		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		recipeService.deleteByIdByUser(id, userId);
+		recipeService.deleteByIdUserId(id, userId);
 	}
 	
 	@Transactional

@@ -46,11 +46,11 @@ public class AdminService {
 	}
 
 	public List<RecipeResponse> getRecipesList() {
-		return recipeService.getAllIsPublic(true).stream().map(recipeMapper::toRecipeResponse).toList();
+		return recipeService.getAllByIsPublic(true).stream().map(recipeMapper::toRecipeResponse).toList();
 	}
 
 	public RecipeResponse patchRecipe(@Valid RecipePatchRequest request) {
-		Recipe recipe = recipeService.getRecipeOptional(request.id())
+		Recipe recipe = recipeService.getOptionalById(request.id())
 				.orElseThrow(() -> new NotFoundException("Recipe not found"));
 		recipe.setIsVerified(request.isVerified());
 		return recipeMapper.toRecipeResponse(recipeService.saveRecipe(recipe));

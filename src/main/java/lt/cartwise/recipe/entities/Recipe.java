@@ -31,6 +31,23 @@ public class Recipe extends Timestampable {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	public Recipe() {};
+
+	public Recipe(Long id, String name, Integer portions, Integer timePreparation, Integer timeCooking,
+			Boolean isPublic, Boolean isVerified, List<RecipeCategory> categories, List<Ingridient> ingidients,
+			User user) {
+		this.id = id;
+		this.name = name;
+		this.portions = portions;
+		this.timePreparation = timePreparation;
+		this.timeCooking = timeCooking;
+		this.isPublic = isPublic;
+		this.isVerified = isVerified;
+		this.categories = categories;
+		this.ingidients = ingidients;
+		this.user = user;
+	}
 
 	public Long getId() {
 		return id;

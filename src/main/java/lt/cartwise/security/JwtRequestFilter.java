@@ -47,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		try {
 			if (authHeader != null && authHeader.startsWith("Bearer ")) {
 				jwt = authHeader.substring(7);
-				
+
 				email = jwtUtils.extractEmail(jwt);
 			}
 
@@ -55,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
-				if( !userDetails.isEnabled() ) {
+				if (!userDetails.isEnabled()) {
 					throw new NotFoundException("User not active");
 				}
 
