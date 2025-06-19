@@ -2,6 +2,7 @@ package lt.cartwise.user.controllers;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import lt.cartwise.user.services.UserRecipeService;
 @RestController
 @RequestMapping("/api/users/recipes")
 public class UserRecipeController {
+
 	private final UserRecipeService userRecipeService;
 	private final GlobalValidator globalValidator;
 
@@ -29,21 +31,23 @@ public class UserRecipeController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<RecipeWithAttributesDto>> getAllByUser(
+	public ResponseEntity<List<RecipeWithAttributesDto>> getAllByUserDetails(
 			@AuthenticationPrincipal UserDetails userDetails) {
 		return ResponseEntity.ok(userRecipeService.getAllByUserDetails(userDetails));
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity<RecipeWithAttributesDto> getByIdByUser(@AuthenticationPrincipal UserDetails userDetails,
+	public ResponseEntity<RecipeWithAttributesDto> getByIdUserDetails(
+			@AuthenticationPrincipal UserDetails userDetails,
 			@PathVariable Long id) {
-		return ResponseEntity.of(userRecipeService.getByIdByUserDetails(userDetails, id));
+		return ResponseEntity.of(userRecipeService.getByIdUserDetails(id, userDetails));
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
-		userRecipeService.deleteByIdByUserDetails(userDetails, id);
-		return ResponseEntity.status(204).build();
+	public ResponseEntity<Void> deleteRecipe(@AuthenticationPrincipal UserDetails userDetails,
+			@PathVariable Long id) {
+		userRecipeService.deleteByIdUserDetails(id, userDetails);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	}
 
 	@PostMapping
@@ -56,7 +60,7 @@ public class UserRecipeController {
 		globalValidator.validate(recipeCreate);
 		userRecipeService.createRecipe(userDetails, recipeCreate, files);
 
-		return ResponseEntity.accepted().build();
+		return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	}
 
 }

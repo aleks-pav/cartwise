@@ -18,14 +18,6 @@ public class UserMapper {
 		this.planMapper = planMapper;
 	}
 
-	public User toEntity(UserDto userDto) {
-		User user = new User();
-		user.setEmail(userDto.getEmail());
-		user.setName(userDto.getName());
-		user.setId(userDto.getId());
-		return user;
-	}
-
 	public UserDto toDto(User entity) {
 		String avatarSrc = (entity.getAvatar() != null) ? "/avatars/" + entity.getId() : null;
 

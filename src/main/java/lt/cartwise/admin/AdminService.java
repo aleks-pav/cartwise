@@ -38,7 +38,7 @@ public class AdminService {
 	}
 
 	public UserResponse putUser(@Valid UserPutRequest request) {
-		User user = userService.getUserOptional(request.id())
+		User user = userService.getOptional(request.id())
 				.orElseThrow(() -> new NotFoundException("User not found"));
 		user.setActive(request.isActive());
 		user.setRole(request.role());

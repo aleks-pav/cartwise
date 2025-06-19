@@ -18,7 +18,7 @@ import lt.cartwise.user.repositories.UserRepository;
 
 @Service
 public class UserService {
-	
+
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
 
@@ -31,61 +31,45 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	public Optional<User> getUserById(Long id) {
+	public Optional<User> getOptional(Long id) {
 		return userRepository.findById(id);
 	}
-	
-	public Optional<UserDto> getUserDtoById(Long id) {
-		return userRepository.findById(id).map( userMapper::toDto );
+
+	public Optional<User> getOptional(UserDetails userDetails) {
+		return userRepository.findByEmail(userDetails.getUsername());
 	}
-	
-	public Optional<UserDto> getUser(UserDetails userDetails) {
-		return getUserOptional(userDetails).map( userMapper::toDto );
+
+	public Optional<UserDto> getOptionalDto(UserDetails userDetails) {
+		return getOptional(userDetails).map(userMapper::toDto);
 	}
-	
-	public UserDto patchUser(UserDetails userDetails, @Valid UserPatchRequest dto) {
-		User user = getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not  found"));
-		if(dto.name() != null)
-			user.setName( dto.name() );
-		return userMapper.toDto( userRepository.save(user) );
+
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
+
+	public UserDto patchUser(UserDetails userDetails, @Valid UserPatchRequest request) {
+		User user = getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
+		if (request.name() != null)
+			user.setName(request.name());
+		return userMapper.toDto(userRepository.save(user));
 	}
 
 	public void uploadAvatar(UserDetails userDetails, MultipartFile file) throws IOException {
-		User user = getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not  found"));
+		User user = getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
 		byte[] avatar = file.getBytes();
 		user.setAvatar(avatar);
 		userRepository.save(user);
 	}
-	
+
 	public byte[] getAvatar(UserDetails userDetails) {
-		User user = getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not  found"));
+		User user = getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
 		return user.getAvatar();
 	}
 
 	public byte[] getAvatar(Long id) {
-		User user = getUserById( id ).orElseThrow( () -> new NotFoundException("User (id:"+ id +") not  found"));
+		User user = getOptional(id)
+				.orElseThrow(() -> new NotFoundException(String.format("User (id: %s) not found", id)));
 		return user.getAvatar();
 	}
-	
-	
-	
-	
-	public Optional<User> getUserOptional(UserDetails userDetails){
-		return userRepository.findByEmail(userDetails.getUsername());
-	}
-	
-	public Optional<User> getUserOptional(Long id){
-		return userRepository.findById(id);
-	}
-	
-	public User saveUser(User user){
-		return userRepository.save(user);
-	}
 
-	
-
-	
-	
-	
-	
 }

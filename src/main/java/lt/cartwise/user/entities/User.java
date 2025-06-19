@@ -9,38 +9,38 @@ import lt.cartwise.plan.entities.Plan;
 import lt.cartwise.recipe.entities.Recipe;
 
 @Entity
-@Table(name = "users"
-		, uniqueConstraints  = {@UniqueConstraint(name = "user_unique", columnNames = {"email"})}
-)
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "user_unique", columnNames = { "email" }) })
 public class User extends Timestampable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@Column(nullable = false)
 	private String email;
 	private String name;
+	
+	@Column(nullable = false)
 	private String password;
 	private boolean isActive;
-	
+
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	
+
 	@Lob
 	@Column(columnDefinition = "LONGBLOB")
 	private byte[] avatar;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user")
 	private List<Recipe> recipes;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Plan> plans;
-	
-	
+
 	public User() {};
-	
-	public User(Long id, String email, String name, String password, boolean isActive, Role role, byte[] avatar
-			, List<Recipe> recipes, List<Plan> plans) {
+
+	public User(Long id, String email, String name, String password, boolean isActive, Role role, byte[] avatar,
+			List<Recipe> recipes, List<Plan> plans) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
@@ -83,7 +83,7 @@ public class User extends Timestampable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public byte[] getAvatar() {
 		return avatar;
 	}
@@ -124,8 +124,4 @@ public class User extends Timestampable {
 		this.plans = plans;
 	}
 
-	
-	
-	
-	
 }

@@ -43,13 +43,13 @@ public class PlanService {
 	}
 
 	public List<PlanDto> getAllByUser(UserDetails userDetails) {
-		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId())
+		Long userId = userService.getOptional(userDetails).map(u -> u.getId())
 				.orElseThrow(() -> new NotFoundException("User not found"));
 		return planRepository.findByUserIdOrderByCreatedAtDesc(userId).stream().map(planMapper::toPlanDto).toList();
 	}
 
 	public Optional<PlanWithAttributesDto> getByIdByUser(UserDetails userDetails, Long id) {
-		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId())
+		Long userId = userService.getOptional(userDetails).map(u -> u.getId())
 				.orElseThrow(() -> new NotFoundException("User not found"));
 		Optional<Plan> optionalPlan = planRepository.findByIdAndUserId(id, userId);
 		if (optionalPlan.isEmpty())
@@ -59,7 +59,7 @@ public class PlanService {
 	}
 
 	public PlanDto createPlan(UserDetails userDetails, @Valid PlanPostRequest planCreate) {
-		User user = userService.getUserOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
+		User user = userService.getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
 		Plan plan = planMapper.toEntity(planCreate);
 		plan.setIsActive(true);
 		plan.setUser(user);
@@ -83,7 +83,7 @@ public class PlanService {
 	}
 
 	public Optional<Plan> getActiveByUser(UserDetails userDetails) {
-		User user = userService.getUserOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
+		User user = userService.getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
 		return planRepository.findByIsActiveAndUserIdOrderByCreatedAtDesc(true, user.getId()).stream().findFirst();
 	}
 
@@ -111,7 +111,7 @@ public class PlanService {
 	}
 
 	public Optional<Plan> getPlanOptional(UserDetails userDetails, Long id) {
-		User user = userService.getUserOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
+		User user = userService.getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
 		return planRepository.findByIdAndUserId(id, user.getId());
 	}
 

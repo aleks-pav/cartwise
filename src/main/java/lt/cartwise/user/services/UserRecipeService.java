@@ -36,42 +36,35 @@ public class UserRecipeService {
 	}
 
 	public List<RecipeWithAttributesDto> getAllByUserDetails(UserDetails userDetails) {
-		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
+		Long userId = userService.getOptional(userDetails).map(User::getId)
+				.orElseThrow(() -> new NotFoundException("User not found"));
 		return recipeService.getAllByUserId(userId);
 	}
-	
-	public List<RecipeWithAttributesDto> getRecipeByUserDetails(UserDetails userDetails) {
-		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
-		return recipeService.getAllByUserId(userId);
-	}
-	
-	public Optional<RecipeWithAttributesDto> getByIdByUserDetails(UserDetails userDetails, Long recipeId) {
-		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
+
+	public Optional<RecipeWithAttributesDto> getByIdUserDetails(Long recipeId, UserDetails userDetails) {
+		Long userId = userService.getOptional(userDetails).map(User::getId)
+				.orElseThrow(() -> new NotFoundException("User not found"));
 		return recipeService.getOptionalDtoByIdUsedId(recipeId, userId);
 	}
 
-	public void deleteByIdByUserDetails(UserDetails userDetails, Long id) {
-		Long userId = userService.getUserOptional(userDetails).map(u -> u.getId()).orElseThrow( () -> new NotFoundException("User not found"));
+	public void deleteByIdUserDetails(Long id, UserDetails userDetails) {
+		Long userId = userService.getOptional(userDetails).map(User::getId)
+				.orElseThrow(() -> new NotFoundException("User not found"));
 		recipeService.deleteByIdUserId(id, userId);
 	}
-	
+
 	@Transactional
-	public void createRecipe(UserDetails userDetails, @Valid RecipePostRequest recipeCreate, List<MultipartFile> files) {
-		User user = userService.getUserOptional(userDetails).orElseThrow( () -> new NotFoundException("User not found"));
-		
+	public void createRecipe(UserDetails userDetails, @Valid RecipePostRequest recipeCreate,
+			List<MultipartFile> files) {
+
+		User user = userService.getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
+
 		Recipe recipe = recipeService.createRecipe(recipeCreate, user);
-		
+
 		if (files != null && !files.isEmpty()) {
 			List<String> uploadedUrls = files.stream().map(s3Service::uploadFile).toList();
 			imageGalleryService.createGallery(Model.RECIPE, recipe.getId(), uploadedUrls);
-	    }
+		}
 	}
 
-
-
-	
-
-
-	
-	
 }

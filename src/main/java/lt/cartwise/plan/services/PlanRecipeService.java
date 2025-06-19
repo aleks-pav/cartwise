@@ -59,7 +59,7 @@ public class PlanRecipeService {
 	} 
 
 	public PlanRecipeDto putPlanRecipe(UserDetails userDetails, @Valid PlanRecipePatchRequest dto) {
-		User user = userService.getUserOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
+		User user = userService.getOptional(userDetails).orElseThrow(() -> new NotFoundException("User not found"));
 		PlanRecipe recipePlan = planRecipeRepository.findByIdAndPlan_User(dto.id(), user)
 				.orElseThrow(() -> new NotFoundException("Plan recipe not found"));
 

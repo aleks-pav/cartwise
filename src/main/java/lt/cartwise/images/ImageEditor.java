@@ -11,7 +11,6 @@ import javax.imageio.stream.ImageInputStream;
 import org.springframework.http.MediaType;
 
 
-//TODO redundant?
 public class ImageEditor {
 
 	public static byte[] convertToPng(byte[] source) throws IOException {
@@ -40,7 +39,7 @@ public class ImageEditor {
         return null;
     }
 
-    public static MediaType getMediaTypeForFormat(String formatName) {
+    public static MediaType getMediaTypeByFormat(String formatName) {
         if (formatName == null) return MediaType.APPLICATION_OCTET_STREAM;
 
         return switch (formatName.toLowerCase()) {

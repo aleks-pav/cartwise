@@ -12,8 +12,7 @@ public class UserDto {
 	private Role role;
 	private PlanWithAttributesDto plan;
 
-	public UserDto() {
-	};
+	public UserDto() {};
 
 	public UserDto(Long id) {
 		this.id = id;
